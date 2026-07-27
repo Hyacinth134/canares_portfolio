@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Hyacinth Cañares | Web Developer</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Roboto:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+
+    <style>
+        /* ── RESET & BASE ── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0b0e1a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        a { text-decoration: none; color: inherit; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0b0e1a; }
+        ::-webkit-scrollbar-thumb { background: #e62429; border-radius: 10px; }
+
+        .mono { font-family: 'Space Mono', monospace; }
+
+        /* ── AMBIENT BACKGROUND ── */
+        .web-pattern {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(230, 36, 41, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(41, 98, 255, 0.04) 0%, transparent 40%),
+                repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.008) 20px, rgba(255,255,255,0.008) 21px),
+                repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(255,255,255,0.008) 20px, rgba(255,255,255,0.008) 21px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        .container { max-width: 1240px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+        /* ── HEXAGON MOTIF ── */
+        .hex-clip { clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%); }
+
+        /* ── HEADER / NAV ── */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            background: rgba(11, 14, 26, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 3px solid rgba(230, 36, 41, 0.3);
+            padding: 12px 0;
+        }
+        header .container { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+        .logo-mark { display: flex; align-items: center; gap: 12px; }
+        .logo-mark .hex-wrap {
+            position: relative; width: 44px; height: 44px; flex-shrink: 0;
+        }
+        .logo-mark .hex-wrap .hex-bg {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, #e62429, #2962ff);
+        }
+        .logo-mark .hex-wrap .hex-bg,
+        .logo-mark .hex-wrap .hex-inner { clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%); }
+        .logo-mark .hex-wrap .hex-inner {
+            position: absolute; inset: 2px; background: #0b0e1a;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 1rem; letter-spacing: -1px; color: #fff;
+        }
+        .logo-mark .logo-word {
+            font-family: 'Bangers', cursive; font-size: 1.3rem; letter-spacing: 1.5px;
+            color: #fff; text-transform: uppercase; line-height: 1;
+        }
+        .logo-mark .logo-word small {
+            display: block; font-family: 'Space Mono', monospace; font-size: 0.55rem;
+            letter-spacing: 3px; color: #5f8bff; text-transform: uppercase; margin-top: 3px; font-weight: 700;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 38px; /* increased spacing between nav links */
+        }
+        nav a.nav-link {
+            font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px;
+            color: #b0b8d1; transition: 0.3s; position: relative; padding-bottom: 4px;
+        }
+        nav a.nav-link::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px;
+            background: #e62429; transition: 0.3s;
+        }
+        nav a.nav-link:hover { color: #fff; }
+        nav a.nav-link:hover::after { width: 100%; }
+
+        nav a.cta-nav {
+            background: #e62429; color: #fff; padding: 8px 20px; border-radius: 50px;
+            font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px;
+            box-shadow: 0 4px 20px rgba(230, 36, 41, 0.35); transition: 0.3s;
+        }
+        nav a.cta-nav:hover { background: #ff2d34; box-shadow: 0 6px 30px rgba(230, 36, 41, 0.5); transform: translateY(-2px); }
+
+        .nav-toggle {
+            display: none; width: 40px; height: 40px; border: none; background: transparent;
+            cursor: pointer; flex-direction: column; justify-content: center; gap: 5px; align-items: center;
+        }
+        .nav-toggle span { width: 24px; height: 2px; background: #fff; transition: 0.3s; }
+        .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-toggle.open span:nth-child(2) { opacity: 0; }
+        .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* ── EYEBROW BADGES ── */
+        .eyebrow {
+            display: inline-flex; align-items: center; gap: 8px; padding: 6px 18px;
+            border-radius: 50px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; margin-bottom: 18px; font-family: 'Space Mono', monospace;
+        }
+        .eyebrow-red { background: rgba(230, 36, 41, 0.12); border: 1px solid rgba(230, 36, 41, 0.35); color: #ff5257; }
+        .eyebrow-blue { background: rgba(41, 98, 255, 0.12); border: 1px solid rgba(41, 98, 255, 0.35); color: #5f8bff; }
+        .eyebrow .dot-live {
+            width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+            box-shadow: 0 0 8px currentColor; animation: pulse 1.8s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+
+        /* ── HERO ── */
+        .hero { padding: 150px 0 90px; min-height: 100vh; display: flex; align-items: center; position: relative; }
+        .hero .container { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 50px; align-items: center; }
+
+        .hero-content h1 {
+            font-family: 'Bangers', cursive; font-size: 4rem; line-height: 1.08; letter-spacing: 2px;
+            background: linear-gradient(135deg, #e62429 30%, #2962ff 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            margin-bottom: 16px;
+        }
+        .hero-content .tagline { font-size: 1.2rem; color: #b0b8d1; margin-bottom: 4px; }
+        .hero-content .tagline strong { color: #fff; font-weight: 700; }
+        .hero-content p.lede { font-size: 1.05rem; line-height: 1.7; color: #9aa3c0; max-width: 480px; margin: 18px 0 32px; }
+
+        .hero-buttons { display: flex; flex-wrap: wrap; gap: 16px; }
+        .btn-primary {
+            display: inline-block; background: #e62429; color: #fff; padding: 14px 38px;
+            border-radius: 50px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+            font-size: 0.9rem; border: none; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 24px rgba(230, 36, 41, 0.35);
+        }
+        .btn-primary:hover { background: #ff2d34; transform: translateY(-3px); box-shadow: 0 8px 36px rgba(230, 36, 41, 0.5); }
+        .btn-secondary {
+            display: inline-block; background: transparent; color: #fff; padding: 14px 38px;
+            border-radius: 50px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+            font-size: 0.9rem; border: 2px solid rgba(255, 255, 255, 0.15); cursor: pointer; transition: 0.3s;
+        }
+        .btn-secondary:hover { border-color: #e62429; color: #e62429; transform: translateY(-3px); }
+
+        /* hero visual */
+        .hero-visual { display: flex; justify-content: center; align-items: center; position: relative; }
+        .hex-photo-outer {
+            position: relative; width: 320px; height: 360px;
+            background: linear-gradient(150deg, #e62429, #2962ff);
+            clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+        }
+        .hex-photo-inner {
+            position: absolute; inset: 4px; overflow: hidden; background: #12162a;
+            clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+        }
+        .hex-photo-inner img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+        .hero-visual .ghost-hex {
+            position: absolute; width: 420px; height: 470px; border: 2px dashed rgba(230, 36, 41, 0.14);
+            clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+            animation: spin-slow 40s linear infinite;
+        }
+        @keyframes spin-slow { to { transform: rotate(360deg); } }
+        .hero-visual .tag-badge {
+            position: absolute; bottom: 6%; left: 50%; transform: translateX(-50%);
+            background: rgba(11,14,26,0.9); border: 1px solid rgba(230,36,41,0.3);
+            padding: 6px 18px; border-radius: 50px; font-size: 0.7rem; letter-spacing: 2px;
+            color: #ff5257; white-space: nowrap;
+        }
+
+        /* ── SECTION TITLES ── */
+        .section-title {
+            font-family: 'Bangers', cursive; font-size: 2.8rem; letter-spacing: 2px;
+            margin-bottom: 12px; display: flex; align-items: center; gap: 16px;
+        }
+        .section-title .accent { color: #e62429; }
+        .section-title .accent-blue { color: #2962ff; }
+        .section-sub {
+            color: #9aa3c0; font-size: 1.02rem; margin-bottom: 48px;
+            border-left: 4px solid #e62429; padding-left: 20px; max-width: 640px;
+        }
+
+        section { padding: 90px 0; }
+        section#home { padding: 0; }
+
+        /* ── ABOUT ── */
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start; }
+        .about-text p { color: #9aa3c0; font-size: 1.05rem; line-height: 1.8; margin-bottom: 18px; }
+        .about-text .web-quote {
+            font-family: 'Bangers', cursive; font-size: 1.5rem; color: #e62429; letter-spacing: 1px;
+            border-left: 4px solid #2962ff; padding-left: 20px; margin: 24px 0;
+        }
+        .about-fact-list { display: flex; flex-direction: column; gap: 18px; }
+        .about-fact {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 18px 22px; display: flex; gap: 16px; align-items: flex-start;
+        }
+        .about-fact .hex-icon {
+            width: 34px; height: 34px; flex-shrink: 0; background: rgba(230,36,41,0.15);
+            clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+            display: flex; align-items: center; justify-content: center; font-size: 0.95rem;
+        }
+        .about-fact h4 { font-size: 0.95rem; margin-bottom: 4px; color: #fff; }
+        .about-fact p { color: #9aa3c0; font-size: 0.9rem; line-height: 1.5; margin: 0; }
+
+        /* ── SKILLS (with Tilt + enhanced hover) ── */
+        .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .skill-group {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px; padding: 28px 26px;
+            transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            transform-style: preserve-3d;
+            will-change: transform;
+            cursor: default;
+        }
+        /* Enhanced hover effect for the skill box itself */
+        .skill-group:hover {
+            border-color: rgba(230, 36, 41, 0.4);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4), inset 0 0 30px rgba(230,36,41,0.03);
+            transform: translateY(-4px);
+        }
+        .skill-group h4 {
+            font-family: 'Space Mono', monospace; font-size: 0.8rem; text-transform: uppercase;
+            letter-spacing: 2px; color: #5f8bff; margin-bottom: 18px;
+            transition: text-shadow 0.3s ease;
+        }
+        .skill-group .tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .skill-group .tags span {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            padding: 7px 16px; border-radius: 50px; font-size: 0.83rem; font-weight: 700;
+            color: #b0b8d1; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-block;
+            animation: float-tag 6s ease-in-out infinite;
+        }
+        .skill-group .tags span:hover {
+            border-color: #e62429; color: #fff; background: rgba(230,36,41,0.12);
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 8px 24px rgba(230,36,41,0.15);
+        }
+        .skill-group .tags span:nth-child(1) { animation-delay: 0s; }
+        .skill-group .tags span:nth-child(2) { animation-delay: 0.6s; }
+        .skill-group .tags span:nth-child(3) { animation-delay: 1.2s; }
+        .skill-group .tags span:nth-child(4) { animation-delay: 0.3s; }
+        .skill-group .tags span:nth-child(5) { animation-delay: 0.9s; }
+        .skill-group .tags span:nth-child(6) { animation-delay: 1.5s; }
+        .skill-group .tags span:nth-child(7) { animation-delay: 0.7s; }
+        .skill-group .tags span:nth-child(8) { animation-delay: 1.3s; }
+
+        @keyframes float-tag {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+        }
+
+        /* ── EXPERIENCE (OJT Showcase only) ── */
+        .ojt-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 28px;
+            padding: 40px 44px;
+            margin-top: 10px;
+        }
+        .ojt-showcase-text h3 {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .ojt-showcase-text .ojt-narrative p {
+            color: #b0b8d1;
+            font-size: 0.98rem;
+            line-height: 1.8;
+            margin-bottom: 18px;
+        }
+        .ojt-showcase-text .ojt-narrative p:last-of-type {
+            margin-bottom: 0;
+        }
+        .ojt-showcase-text .ojt-narrative strong {
+            color: #fff;
+        }
+
+        .ojt-showcase-visual .slideshow-placeholder {
+            border-radius: 16px;
+            aspect-ratio: 4/3;
+            border: 2px solid rgba(230,36,41,0.2);
+            overflow: hidden;
+        }
+        .ojt-showcase-visual .slideshow-label {
+            text-align: center;
+            margin-top: 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: #4a5270;
+            letter-spacing: 1px;
+        }
+
+        .month-flag {
+            position: absolute; top: 14px; left: 14px; z-index: 5;
+            font-family: 'Space Mono', monospace; font-size: 0.72rem; letter-spacing: 1.5px;
+            text-transform: uppercase; color: #fff; background: rgba(11,14,26,0.8);
+            backdrop-filter: blur(6px); border: 1px solid rgba(230,36,41,0.5);
+            padding: 5px 16px; border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .project-tag-group {
+            position: absolute; bottom: 14px; right: 14px; z-index: 5;
+            display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end;
+            max-width: 70%;
+        }
+        .project-tag-group .mini-tag {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #fff;
+            background: rgba(11,14,26,0.75);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(230,36,41,0.3);
+            padding: 3px 10px;
+            border-radius: 50px;
+            white-space: nowrap;
+        }
+
+        /* ── PROJECTS ── */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+        .project-card {
+            background: rgba(255,255,255,0.03); border-radius: 18px; border: 1px solid rgba(255,255,255,0.06);
+            overflow: hidden; transition: 0.4s; position: relative;
+        }
+        .project-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(230,36,41,0.25);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .slideshow-placeholder {
+            width: 100%; aspect-ratio: 16/9; position: relative; overflow: hidden;
+            border-bottom: 3px solid rgba(230,36,41,0.2); cursor: pointer;
+        }
+        .slideshow-placeholder .slide-track { display: flex; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94); }
+        .slideshow-placeholder .slide { min-width: 100%; height: 100%; background-size: cover; background-position: center; position: relative; }
+        .slide-1 { background: linear-gradient(135deg, #1a1f33 0%, #2a1f3a 100%); }
+        .slide-2 { background: linear-gradient(135deg, #1a1f33 0%, #1a2a3a 100%); }
+        .slide-3 { background: linear-gradient(135deg, #1a1f33 0%, #3a1a2a 100%); }
+        .slide-4 { background: linear-gradient(135deg, #1a1f33 0%, #1a3a2a 100%); }
+        .slideshow-placeholder .slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .slideshow-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 5; }
+        .slideshow-dots .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.15); border: none; cursor: pointer; transition: 0.3s; padding: 0; }
+        .slideshow-dots .dot.active { background: #e62429; box-shadow: 0 0 20px rgba(230,36,41,0.4); transform: scale(1.3); }
+
+        .slideshow-arrows { position: absolute; top: 50%; left: 0; width: 100%; transform: translateY(-50%); display: flex; justify-content: space-between; padding: 0 6px; pointer-events: none; z-index: 4; }
+        .slideshow-arrows button {
+            pointer-events: auto; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.06); color: #fff; width: 28px; height: 28px;
+            border-radius: 50%; font-size: 1rem; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .slideshow-arrows button:hover { background: rgba(230,36,41,0.3); border-color: #e62429; }
+
+        .project-info { padding: 16px 18px 20px; }
+        .project-info h3 { font-family: 'Bangers', cursive; font-size: 1.2rem; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .project-info h3 .highlight { color: #e62429; }
+        .project-tech { display: flex; flex-wrap: wrap; gap: 5px; }
+        .project-tech span {
+            background: rgba(230,36,41,0.12); color: #e62429; padding: 1px 10px; border-radius: 50px;
+            font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px;
+            border: 1px solid rgba(230,36,41,0.08);
+        }
+        .project-info .project-tech { margin: 6px 0 8px; }
+        .project-info p { color: #9aa3c0; font-size: 0.85rem; line-height: 1.5; margin-bottom: 12px; }
+        .project-links { display: flex; gap: 12px; flex-wrap: wrap; }
+        .project-links a { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #b0b8d1; transition: 0.3s; display: flex; align-items: center; gap: 4px; }
+        .project-links a:hover { color: #e62429; }
+        .project-links a .arrow { transition: 0.3s; }
+        .project-links a:hover .arrow { transform: translateX(6px); }
+
+        .project-cover {
+            width: 100%; aspect-ratio: 16/9; position: relative; overflow: hidden;
+            border-bottom: 3px solid rgba(230,36,41,0.2); display: block;
+        }
+        .project-cover img {
+            width: 100%; height: 100%; object-fit: cover; object-position: top center;
+            display: block; transition: 0.5s;
+        }
+        .project-card:hover .project-cover img { transform: scale(1.06); }
+
+        /* ── CONTACT ── */
+        #contact { border-top: 1px solid rgba(255,255,255,0.04); }
+        .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .contact-info h2 { font-family: 'Bangers', cursive; font-size: 2.6rem; letter-spacing: 2px; }
+        .contact-info h2 .accent { color: #e62429; }
+        .contact-info p { color: #9aa3c0; font-size: 1.05rem; line-height: 1.7; margin: 16px 0 28px; max-width: 400px; }
+        .contact-socials { display: flex; gap: 20px; flex-wrap: wrap; }
+        .contact-socials a {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); padding: 10px 24px;
+            border-radius: 50px; font-weight: 700; font-size: 0.9rem; color: #b0b8d1; transition: 0.3s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .contact-socials a:hover { border-color: #e62429; color: #fff; background: rgba(230,36,41,0.06); transform: translateY(-3px); }
+
+        .contact-form { display: flex; flex-direction: column; gap: 16px; }
+        .contact-form input, .contact-form textarea {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;
+            padding: 16px 20px; font-size: 1rem; color: #fff; font-family: 'Roboto', sans-serif; transition: 0.3s; outline: none;
+        }
+        .contact-form input:focus, .contact-form textarea:focus { border-color: #e62429; background: rgba(255,255,255,0.06); box-shadow: 0 0 30px rgba(230,36,41,0.04); }
+        .contact-form input::placeholder, .contact-form textarea::placeholder { color: #4a5270; }
+        .contact-form textarea { resize: vertical; min-height: 130px; }
+        .contact-form .btn-primary { align-self: flex-start; padding: 14px 44px; }
+
+        /* ── FOOTER ── */
+        footer { border-top: 1px solid rgba(255,255,255,0.04); padding: 30px 0; text-align: center; color: #4a5270; font-size: 0.9rem; }
+        footer .foot-mark { font-family: 'Bangers', cursive; color: #e62429; letter-spacing: 2px; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 980px) {
+            nav .nav-links, nav a.cta-nav { display: none; }
+            .nav-toggle { display: flex; }
+            nav.open .nav-links {
+                display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+                position: absolute; top: 100%; left: 0; width: 100%; background: rgba(11,14,26,0.98);
+                padding: 18px 24px 24px; border-bottom: 3px solid rgba(230,36,41,0.3);
+            }
+            nav.open a.cta-nav { display: inline-block; margin-top: 10px; }
+            nav.open .nav-links a.nav-link { padding: 10px 0; width: 100%; }
+        }
+
+        @media (max-width: 1024px) {
+            .hero .container { grid-template-columns: 1fr; text-align: center; }
+            .hero-content p.lede { margin-left: auto; margin-right: auto; }
+            .hero-buttons { justify-content: center; }
+            .hero-visual { margin-top: 20px; }
+            .hex-photo-outer { width: 260px; height: 300px; }
+            .ghost-hex { width: 340px; height: 390px; }
+            .about-grid, .contact-wrap { grid-template-columns: 1fr; }
+            .skills-grid { grid-template-columns: 1fr 1fr; }
+            .contact-form .btn-primary { align-self: stretch; }
+            .ojt-showcase {
+                grid-template-columns: 1fr;
+                padding: 30px 24px;
+            }
+            .ojt-showcase-visual .slideshow-placeholder {
+                aspect-ratio: 16/9;
+            }
+            .projects-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero-content h1 { font-size: 2.8rem; }
+            .section-title { font-size: 2.1rem; }
+            .projects-grid { grid-template-columns: 1fr 1fr; }
+            .skills-grid { grid-template-columns: 1fr; }
+            section { padding: 60px 0; }
+            .ojt-showcase { padding: 20px 16px; gap: 30px; }
+            .slideshow-arrows button { width: 24px; height: 24px; font-size: 0.8rem; }
+            .month-flag { font-size: 0.55rem; padding: 3px 10px; top: 8px; left: 8px; }
+            .project-tag-group .mini-tag { font-size: 0.4rem; padding: 2px 6px; }
+            .project-info h3 { font-size: 1rem; }
+            .project-info p { font-size: 0.75rem; }
+        }
+        @media (max-width: 480px) {
+            .projects-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ── ANIMATIONS ── */
+        .fade-up { opacity: 0; transform: translateY(40px); animation: fadeUp 0.8s ease forwards; }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+    </style>
+</head>
+
+<body>
+    <div class="web-pattern"></div>
+
+    <!-- ─── HEADER ─── -->
+    <header>
+        <div class="container">
+            <a href="#home" class="logo-mark">
+                <div class="hex-wrap">
+                    <div class="hex-bg"></div>
+                    <div class="hex-inner">HC</div>
+                </div>
+                <div class="logo-word">Hyacinth<small>Web Developer</small></div>
+            </a>
+
+            <nav id="mainNav">
+                <div class="nav-links">
+                    <!-- "HOME" removed as requested – the landing page IS home -->
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#skills" class="nav-link">Skills</a>
+                    <a href="#experience" class="nav-link">Experience</a>
+                    <a href="#projects" class="nav-link">Projects</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </div>
+                <a href="#" class="cta-nav">Resume</a>
+            </nav>
+
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ─── HOME / HERO ─── -->
+    <section id="home">
+        <div class="hero">
+            <div class="container">
+                <div class="hero-content fade-up">
+                    <span class="eyebrow eyebrow-red"><span class="dot-live"></span> Open to opportunities</span>
+                    <p class="tagline">Front-end developer &amp; <strong>UI/UX enthusiast</strong></p>
+                    <h1>Hi, I'm<br />Hyacinth</h1>
+                    <p class="lede">
+                        I build clean, reliable web systems — from reservation platforms to
+                        internal portals — with a strong eye for detail and a habit of shipping
+                        things that actually hold up.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#projects" class="btn-primary">View My Work</a>
+                        <a href="#contact" class="btn-secondary">Let's Talk</a>
+                    </div>
+                </div>
+                <div class="hero-visual fade-up delay-2">
+                    <div class="ghost-hex"></div>
+                    <div class="hex-photo-outer">
+                        <div class="hex-photo-inner">
+                            <img src="pic-me.jpg" alt="Hyacinth M. Cañares" />
+                        </div>
+                    </div>
+                    <span class="tag-badge mono">BSIT · Magna Cum Laude</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── ABOUT ─── -->
+    <section id="about">
+        <div class="container">
+            <span class="eyebrow eyebrow-red fade-up">About Me</span>
+            <h2 class="section-title fade-up"><span class="accent-blue">✦</span> About <span class="accent">Me</span></h2>
+            <div class="about-grid">
+                <div class="about-text fade-up delay-1">
+                    <p>
+                        I'm Hyacinth M. Cañares, a detail-oriented fresh graduate with a
+                        Bachelor of Science in Information Technology from Carlos Hilado
+                        Memorial State University, graduating Magna Cum Laude.
+                    </p>
+                    <div class="web-quote">"With great code comes great responsibility."</div>
+                    <p>
+                        I'm eager to apply my technical skills in a professional environment
+                        while continuously learning — adaptable, hardworking, and comfortable
+                        meeting deadlines in independent and team settings alike.
+                    </p>
+                </div>
+                <div class="about-fact-list fade-up delay-2">
+                    <div class="about-fact">
+                        <div class="hex-icon">🎓</div>
+                        <div><h4>BSIT, Magna Cum Laude</h4><p>Carlos Hilado Memorial State University</p></div>
+                    </div>
+                    <div class="about-fact">
+                        <div class="hex-icon">💻</div>
+                        <div><h4>Full-stack fundamentals</h4><p>Comfortable across front end, back end, and databases</p></div>
+                    </div>
+                    <div class="about-fact">
+                        <div class="hex-icon">🤝</div>
+                        <div><h4>Team-oriented</h4><p>Capstone, freelance, and OJT work across different team setups</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── SKILLS ─── -->
+    <section id="skills">
+        <div class="container">
+            <span class="eyebrow eyebrow-blue fade-up">Toolkit</span>
+            <h2 class="section-title fade-up"><span class="accent">✦</span> Skills <span class="accent-blue">&amp; Tools</span></h2>
+            <p class="section-sub fade-up delay-1">What I use to build and ship a project, end to end.</p>
+            <div class="skills-grid">
+                <div class="skill-group fade-up delay-2" data-tilt>
+                    <h4>Languages</h4>
+                    <div class="tags">
+                        <span>HTML</span><span>CSS</span><span>JavaScript</span><span>PHP</span><span>Python</span><span>SQL</span>
+                    </div>
+                </div>
+                <div class="skill-group fade-up delay-3" data-tilt>
+                    <h4>Frameworks &amp; Tools</h4>
+                    <div class="tags">
+                        <span>Laravel</span><span>MySQL</span><span>Git</span><span>Microsoft Office</span>
+                    </div>
+                </div>
+                <div class="skill-group fade-up delay-4" data-tilt>
+                    <h4>Core Strengths</h4>
+                    <div class="tags">
+                        <span>Problem Solving</span><span>Attention to Detail</span><span>Teamwork</span><span>Time Management</span><span>Adaptability</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── EXPERIENCE (OJT ONLY) ─── -->
+    <section id="experience">
+        <div class="container">
+            <span class="eyebrow eyebrow-red fade-up">Track Record</span>
+            <h2 class="section-title fade-up"><span class="accent-blue">✦</span> Experience</h2>
+            <p class="section-sub fade-up delay-1">My On-the-Job Training journey at Inksite Advertising.</p>
+
+            <!-- OJT SHOWCASE (Split Layout: Text | Slideshow) -->
+            <div class="ojt-showcase fade-up delay-3">
+                <div class="ojt-showcase-text">
+                    <span class="eyebrow eyebrow-red" style="margin-bottom: 12px; display: inline-flex;">🖨️ On-the-Job Training</span>
+                    <h3>Inksite Advertising <span style="color: #5f8bff;">·</span> 2023</h3>
+
+                    <div class="ojt-narrative">
+                        <p>
+                            In 2023, I completed my On-the-Job Training at <strong>Inksite Advertising</strong>,
+                            a full-service printing and advertising company. Over four months, I worked directly
+                            with the company's manager and senior developers, transitioning from classroom
+                            projects to building <strong>9 distinct production-grade tools</strong> that the
+                            business still relies on today.
+                        </p>
+                        <p>
+                            I was fully embedded in their workflow—attending daily stand-ups, gathering
+                            requirements from the operations team, and shipping features on a two-week sprint
+                            cycle. I built <strong>pricing calculators</strong> (tarpaulin, Sintra board, custom
+                            t-shirts), a <strong>Point-of-Sale system</strong>, a <strong>dental clinic
+                            management system</strong>, a <strong>photography booking portal</strong>, an
+                            <strong>inventory module</strong>, a <strong>content creation CMS</strong>, and
+                            several <strong>promotional web games</strong>—each one replacing messy spreadsheets
+                            and whiteboard tracking.
+                        </p>
+                        <p>
+                            By the end of my internship, my supervisor noted my ability to deliver ahead of
+                            schedule, adapt quickly to their existing tech stack, and communicate clearly with
+                            non-technical staff—making me a reliable contributor from day one. Several of these
+                            tools are <strong>still in active use</strong> at the company today.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="ojt-showcase-visual">
+                    <div class="slideshow-placeholder" data-slideshow="ojt-featured">
+                        <div class="slide-track">
+                            <!-- SLIDE 1: Team Photo 1 -->
+                            <div class="slide slide-1">
+                                <img src="project/ojt/team1.jpg" alt="OJT Team with Manager" />
+                                <span class="month-flag">🤝 Team &amp; Manager</span>
+                            </div>
+                            <!-- SLIDE 2: Team Photo 2 -->
+                            <div class="slide slide-2">
+                                <img src="project/ojt/team2.jpg" alt="OJT Team with Supervisor" />
+                                <span class="month-flag">🤝 Team &amp; Supervisor</span>
+                            </div>
+                            <!-- SLIDE 3: February – Calculators -->
+                            <div class="slide slide-3">
+                                <img src="project/ojt/feb-calc.jpg" alt="February Projects: Pricing Calculators" />
+                                <span class="month-flag">📐 February 2026</span>
+                                <div class="project-tag-group">
+                                    <span class="mini-tag">Tarpaulin Calc</span>
+                                    <span class="mini-tag">Sintra Calc</span>
+                                    <span class="mini-tag">T-Shirt Preview</span>
+                                </div>
+                            </div>
+                            <!-- SLIDE 4: March – POS + Dental -->
+                            <div class="slide slide-4">
+                                <img src="project/ojt/mar-pos.jpg" alt="March Projects: POS &amp; Dental Clinic" />
+                                <span class="month-flag">🧾 March 2026</span>
+                                <div class="project-tag-group">
+                                    <span class="mini-tag">POS System</span>
+                                    <span class="mini-tag">Dental Clinic</span>
+                                </div>
+                            </div>
+                            <!-- SLIDE 5: April – Booking + Inventory -->
+                            <div class="slide slide-1">
+                                <img src="project/ojt/apr-booking.jpg" alt="April Projects: Booking &amp; Inventory" />
+                                <span class="month-flag">📸 April 2026</span>
+                                <div class="project-tag-group">
+                                    <span class="mini-tag">Booking Portal</span>
+                                    <span class="mini-tag">Inventory Module</span>
+                                </div>
+                            </div>
+                            <!-- SLIDE 6: May – CMS + Games -->
+                            <div class="slide slide-2">
+                                <img src="project/ojt/may-cms.jpg" alt="May Projects: CMS &amp; Web Games" />
+                                <span class="month-flag">🗂️ May 2026</span>
+                                <div class="project-tag-group">
+                                    <span class="mini-tag">Content CMS</span>
+                                    <span class="mini-tag">Promo Games</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slideshow-arrows">
+                            <button class="prev">‹</button>
+                            <button class="next">›</button>
+                        </div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="slideshow-label">
+                        ⬅️ 6 slides: 2 team photos + 9 projects across 4 months
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── PROJECTS ─── -->
+    <section id="projects">
+        <div class="container">
+            <span class="eyebrow eyebrow-blue fade-up">Portfolio</span>
+            <h2 class="section-title fade-up"><span class="accent">✦</span> Web <span class="accent-blue">Projects</span></h2>
+            <p class="section-sub fade-up delay-1">Each project features a slideshow showcasing key features — hover to explore.</p>
+
+            <div class="projects-grid">
+
+                <!-- PROJECT 1 -->
+                <div class="project-card fade-up delay-2">
+                    <div class="slideshow-placeholder" data-slideshow="0">
+                        <div class="slide-track">
+                            <div class="slide slide-1"><img src="project/caps/c1.jpg" alt="CHMSU IPMO Portal feature 1"/></div>
+                            <div class="slide slide-2"><img src="project/caps/c2.jpg" alt="CHMSU IPMO Portal feature 2"/></div>
+                            <div class="slide slide-3"><img src="project/caps/c3.jpg" alt="CHMSU IPMO Portal feature 3"/></div>
+                            <div class="slide slide-4"><img src="project/caps/c4.jpg" alt="CHMSU IPMO Portal feature 4"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">CHMSU</span> IPMO Portal</h3>
+                        <div class="project-tech"><span>PHP</span><span>Laravel</span><span>MySQL</span></div>
+                        <p>A web-based online application system for CHMSU-IPMO Services, streamlining IP service requests with real-time monitoring, a document repository, and analytics.</p>
+                        <div class="project-links">
+                            <a href="https://chmsu-ipmo.42web.io/ipmo/login.php#login" target="_blank">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 2 -->
+                <div class="project-card fade-up delay-3">
+                    <div class="slideshow-placeholder" data-slideshow="1">
+                        <div class="slide-track">
+                            <div class="slide slide-2"><img src="project/mini/s1.png" alt="HGS Beach Resort feature 1"/></div>
+                            <div class="slide slide-3"><img src="project/mini/s2.png" alt="HGS Beach Resort feature 2"/></div>
+                            <div class="slide slide-4"><img src="project/mini/s3.png" alt="HGS Beach Resort feature 3"/></div>
+                            <div class="slide slide-1"><img src="project/mini/s4.png" alt="HGS Beach Resort feature 4"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">HGS</span> Beach Resort</h3>
+                        <div class="project-tech"><span>PHP</span><span>Laravel</span><span>MySQL</span></div>
+                        <p>A digitalized reservation management system covering room &amp; service browsing, reservations, payments, guest feedback, and sales reporting.</p>
+                        <div class="project-links">
+                            <a href="#">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 3 (Lorem Ipsum) -->
+                <div class="project-card fade-up delay-4">
+                    <div class="slideshow-placeholder" data-slideshow="2">
+                        <div class="slide-track">
+                            <div class="slide slide-3"><img src="https://picsum.photos/seed/project3/600/400" alt="Project 3 placeholder"/></div>
+                            <div class="slide slide-4"><img src="https://picsum.photos/seed/project3b/600/400" alt="Project 3 placeholder 2"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">Lorem</span> Ipsum Dolor</h3>
+                        <div class="project-tech"><span>React</span><span>Node.js</span><span>MongoDB</span></div>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                        <div class="project-links">
+                            <a href="#">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 4 (Lorem Ipsum) -->
+                <div class="project-card fade-up delay-1">
+                    <div class="slideshow-placeholder" data-slideshow="3">
+                        <div class="slide-track">
+                            <div class="slide slide-1"><img src="https://picsum.photos/seed/project4/600/400" alt="Project 4 placeholder"/></div>
+                            <div class="slide slide-2"><img src="https://picsum.photos/seed/project4b/600/400" alt="Project 4 placeholder 2"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">Consectetur</span> Adipiscing</h3>
+                        <div class="project-tech"><span>Vue.js</span><span>Firebase</span></div>
+                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        <div class="project-links">
+                            <a href="#">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 5 (Lorem Ipsum) -->
+                <div class="project-card fade-up delay-2">
+                    <div class="slideshow-placeholder" data-slideshow="4">
+                        <div class="slide-track">
+                            <div class="slide slide-3"><img src="https://picsum.photos/seed/project5/600/400" alt="Project 5 placeholder"/></div>
+                            <div class="slide slide-4"><img src="https://picsum.photos/seed/project5b/600/400" alt="Project 5 placeholder 2"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">Sed Do</span> Eiusmod Tempor</h3>
+                        <div class="project-tech"><span>Python</span><span>Django</span><span>PostgreSQL</span></div>
+                        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                        <div class="project-links">
+                            <a href="#">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── CONTACT ─── -->
+    <section id="contact">
+        <div class="container">
+            <span class="eyebrow eyebrow-blue fade-up">Contact</span>
+            <h2 class="section-title fade-up"><span class="accent">✦</span> Get In <span class="accent-blue">Touch</span></h2>
+            <div class="contact-wrap">
+                <div class="contact-info fade-up delay-1">
+                    <h2>Let's build<br />something <span class="accent">amazing</span>.</h2>
+                    <p>Whether you need a new website, a web app, or just want to chat about ideas — I'm always open to new opportunities.</p>
+                    <div class="contact-socials">
+                        <a href="https://github.com/Hyacinth134" target="_blank">🐙 GitHub</a>
+                        <a href="https://www.linkedin.com/in/hyacinth-cañares-a54a36417" target="_blank">💼 LinkedIn</a>
+                        <a href="https://www.facebook.com/htnicayh.malundocanares" target="_blank">🐦Facebook</a>
+                        <a href="mailto:hyacanares543@gmail.com" target="_blank ">📧 Email</a>
+                    </div>
+                </div>
+                <form class="contact-form fade-up delay-2">
+                    <input type="text" placeholder="Your Name" />
+                    <input type="email" placeholder="Your Email" />
+                    <textarea placeholder="Tell me about your project…"></textarea>
+                    <button type="submit" class="btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── FOOTER ─── -->
+    <footer>
+        <div class="container">
+            <p><span class="foot-mark">Hyacinth</span> &mdash; 2026 &bull; Built with <span style="color:#e62429;">❤</span> &amp; code</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ── Mobile Nav Toggle ──
+            const nav = document.getElementById('mainNav');
+            const toggle = document.getElementById('navToggle');
+            toggle.addEventListener('click', () => {
+                nav.classList.toggle('open');
+                toggle.classList.toggle('open');
+            });
+            nav.querySelectorAll('.nav-link, .cta-nav').forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('open');
+                    toggle.classList.remove('open');
+                });
+            });
+
+            // ── Slideshows ──
+            const placeholders = document.querySelectorAll('.slideshow-placeholder');
+            placeholders.forEach((container) => {
+                const track = container.querySelector('.slide-track');
+                const slides = track.querySelectorAll('.slide');
+                const dotsContainer = container.querySelector('.slideshow-dots');
+                const prevBtn = container.querySelector('.prev');
+                const nextBtn = container.querySelector('.next');
+                let current = 0;
+                const total = slides.length;
+
+                if (total === 0) return;
+
+                for (let i = 0; i < total; i++) {
+                    const dot = document.createElement('button');
+                    dot.className = 'dot' + (i === 0 ? ' active' : '');
+                    dot.addEventListener('click', () => goTo(i));
+                    dotsContainer.appendChild(dot);
+                }
+                const dots = dotsContainer.querySelectorAll('.dot');
+
+                function goTo(index) {
+                    current = (index + total) % total;
+                    track.style.transform = `translateX(-${current * 100}%)`;
+                    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+                }
+                function next() { goTo(current + 1); }
+                function prev() { goTo(current - 1); }
+
+                if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
+                if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); next(); });
+
+                let interval = setInterval(next, 4800);
+                container.addEventListener('mouseenter', () => clearInterval(interval));
+                container.addEventListener('mouseleave', () => {
+                    clearInterval(interval);
+                    interval = setInterval(next, 4800);
+                });
+                container.addEventListener('click', (e) => {
+                    if (e.target.closest('.slideshow-arrows') || e.target.closest('.slideshow-dots')) return;
+                    next();
+                });
+                container.setAttribute('tabindex', '0');
+                container.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight') next();
+                    if (e.key === 'ArrowLeft') prev();
+                });
+            });
+
+            // ── SKILLS: 3D TILT EFFECT ──
+            const skillCards = document.querySelectorAll('.skill-group[data-tilt]');
+            skillCards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -8;
+                    const rotateY = ((x - centerX) / centerX) * 8;
+                    card.style.transform =
+                        `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                    const heading = card.querySelector('h4');
+                    if (heading) {
+                        const glow = Math.abs(rotateX) + Math.abs(rotateY);
+                        heading.style.textShadow = `0 0 ${glow * 2}px rgba(230,36,41,0.2)`;
+                    }
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform =
+                    'perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                    const heading = card.querySelector('h4');
+                    if (heading) {
+                        heading.style.textShadow = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
