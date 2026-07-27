@@ -79,7 +79,7 @@
         nav {
             display: flex;
             align-items: center;
-            gap: 38px; /* increased spacing between nav links */
+            gap: 38px;
         }
         nav a.nav-link {
             font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px;
@@ -211,7 +211,7 @@
         .about-fact h4 { font-size: 0.95rem; margin-bottom: 4px; color: #fff; }
         .about-fact p { color: #9aa3c0; font-size: 0.9rem; line-height: 1.5; margin: 0; }
 
-        /* ── SKILLS (with Tilt + enhanced hover) ── */
+        /* ── SKILLS ── */
         .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
         .skill-group {
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
@@ -221,7 +221,6 @@
             will-change: transform;
             cursor: default;
         }
-        /* Enhanced hover effect for the skill box itself */
         .skill-group:hover {
             border-color: rgba(230, 36, 41, 0.4);
             background: rgba(255, 255, 255, 0.06);
@@ -260,7 +259,7 @@
             50% { transform: translateY(-4px); }
         }
 
-        /* ── EXPERIENCE (OJT Showcase only) ── */
+        /* ── EXPERIENCE ── */
         .ojt-showcase {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -313,24 +312,6 @@
             backdrop-filter: blur(6px); border: 1px solid rgba(230,36,41,0.5);
             padding: 5px 16px; border-radius: 50px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .project-tag-group {
-            position: absolute; bottom: 14px; right: 14px; z-index: 5;
-            display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end;
-            max-width: 70%;
-        }
-        .project-tag-group .mini-tag {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.55rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: #fff;
-            background: rgba(11,14,26,0.75);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(230,36,41,0.3);
-            padding: 3px 10px;
-            border-radius: 50px;
-            white-space: nowrap;
         }
 
         /* ── PROJECTS ── */
@@ -473,7 +454,6 @@
             .ojt-showcase { padding: 20px 16px; gap: 30px; }
             .slideshow-arrows button { width: 24px; height: 24px; font-size: 0.8rem; }
             .month-flag { font-size: 0.55rem; padding: 3px 10px; top: 8px; left: 8px; }
-            .project-tag-group .mini-tag { font-size: 0.4rem; padding: 2px 6px; }
             .project-info h3 { font-size: 1rem; }
             .project-info p { font-size: 0.75rem; }
         }
@@ -508,7 +488,6 @@
 
             <nav id="mainNav">
                 <div class="nav-links">
-                    <!-- "HOME" removed as requested – the landing page IS home -->
                     <a href="#about" class="nav-link">About</a>
                     <a href="#skills" class="nav-link">Skills</a>
                     <a href="#experience" class="nav-link">Experience</a>
@@ -621,14 +600,13 @@
         </div>
     </section>
 
-    <!-- ─── EXPERIENCE (OJT ONLY) ─── -->
+    <!-- ─── EXPERIENCE ─── -->
     <section id="experience">
         <div class="container">
             <span class="eyebrow eyebrow-red fade-up">Track Record</span>
             <h2 class="section-title fade-up"><span class="accent-blue">✦</span> Experience</h2>
             <p class="section-sub fade-up delay-1">My On-the-Job Training journey at Inksite Advertising.</p>
 
-            <!-- OJT SHOWCASE (Split Layout: Text | Slideshow) -->
             <div class="ojt-showcase fade-up delay-3">
                 <div class="ojt-showcase-text">
                     <span class="eyebrow eyebrow-red" style="margin-bottom: 12px; display: inline-flex;">🖨️ On-the-Job Training</span>
@@ -664,53 +642,73 @@
                 <div class="ojt-showcase-visual">
                     <div class="slideshow-placeholder" data-slideshow="ojt-featured">
                         <div class="slide-track">
+
                             <!-- SLIDE 1: Team Photo 1 -->
                             <div class="slide slide-1">
-                                <img src="project/ojt/team1.jpg" alt="OJT Team with Manager" />
-                                <span class="month-flag">🤝 Team &amp; Manager</span>
+                                <img src="project/ojt/team1.jpg" alt="OJT Team" />
+                                <span class="month-flag">🤝 Team</span>
                             </div>
+
                             <!-- SLIDE 2: Team Photo 2 -->
                             <div class="slide slide-2">
-                                <img src="project/ojt/team2.jpg" alt="OJT Team with Supervisor" />
-                                <span class="month-flag">🤝 Team &amp; Supervisor</span>
+                                <img src="project/ojt/team2.jpg" alt="OJT Team with Manager and Supervisor" />
+                                <span class="month-flag">🤝 Manager &amp; Supervisor</span>
                             </div>
-                            <!-- SLIDE 3: February – Calculators -->
+
+                            <!-- SLIDE 3: Tarpaulin Calculator -->
                             <div class="slide slide-3">
-                                <img src="project/ojt/feb-calc.jpg" alt="February Projects: Pricing Calculators" />
-                                <span class="month-flag">📐 February 2026</span>
-                                <div class="project-tag-group">
-                                    <span class="mini-tag">Tarpaulin Calc</span>
-                                    <span class="mini-tag">Sintra Calc</span>
-                                    <span class="mini-tag">T-Shirt Preview</span>
-                                </div>
+                                <img src="project/ojt/feb1.jpg" alt="Tarpaulin Calculator" />
+                                <span class="month-flag">📐 Feb 2026 · Tarpaulin Calc</span>
                             </div>
-                            <!-- SLIDE 4: March – POS + Dental -->
+
+                            <!-- SLIDE 4: Sintra Calculator -->
                             <div class="slide slide-4">
-                                <img src="project/ojt/mar-pos.jpg" alt="March Projects: POS &amp; Dental Clinic" />
-                                <span class="month-flag">🧾 March 2026</span>
-                                <div class="project-tag-group">
-                                    <span class="mini-tag">POS System</span>
-                                    <span class="mini-tag">Dental Clinic</span>
-                                </div>
+                                <img src="project/ojt/feb2.jpg" alt="Sintra Calculator" />
+                                <span class="month-flag">📐 Feb 2026 · Sintra Calc</span>
                             </div>
-                            <!-- SLIDE 5: April – Booking + Inventory -->
+
+                            <!-- SLIDE 5: T-Shirt Preview -->
                             <div class="slide slide-1">
-                                <img src="project/ojt/apr-booking.jpg" alt="April Projects: Booking &amp; Inventory" />
-                                <span class="month-flag">📸 April 2026</span>
-                                <div class="project-tag-group">
-                                    <span class="mini-tag">Booking Portal</span>
-                                    <span class="mini-tag">Inventory Module</span>
-                                </div>
+                                <img src="project/ojt/feb3.jpg" alt="T-Shirt Preview Tool" />
+                                <span class="month-flag">👕 Feb 2026 · T-Shirt Preview</span>
                             </div>
-                            <!-- SLIDE 6: May – CMS + Games -->
+
+                            <!-- SLIDE 6: POS System -->
                             <div class="slide slide-2">
-                                <img src="project/ojt/may-cms.jpg" alt="May Projects: CMS &amp; Web Games" />
-                                <span class="month-flag">🗂️ May 2026</span>
-                                <div class="project-tag-group">
-                                    <span class="mini-tag">Content CMS</span>
-                                    <span class="mini-tag">Promo Games</span>
-                                </div>
+                                <img src="project/ojt/mar1.jpg" alt="Point-of-Sale System" />
+                                <span class="month-flag">🧾 Mar 2026 · POS System</span>
                             </div>
+
+                            <!-- SLIDE 7: Dental Clinic -->
+                            <div class="slide slide-3">
+                                <img src="project/ojt/mar2.jpg" alt="Dental Clinic Management System" />
+                                <span class="month-flag">🦷 Mar 2026 · Dental Clinic</span>
+                            </div>
+
+                            <!-- SLIDE 8: Booking Portal -->
+                            <div class="slide slide-4">
+                                <img src="project/ojt/apr1.jpg" alt="Photography Booking Portal" />
+                                <span class="month-flag">📸 Apr 2026 · Booking Portal</span>
+                            </div>
+
+                            <!-- SLIDE 9: Inventory Module -->
+                            <div class="slide slide-1">
+                                <img src="project/ojt/apr2.jpg" alt="Inventory Module" />
+                                <span class="month-flag">📦 Apr 2026 · Inventory Module</span>
+                            </div>
+
+                            <!-- SLIDE 10: Content CMS -->
+                            <div class="slide slide-2">
+                                <img src="project/ojt/may1.jpg" alt="Content Creation CMS" />
+                                <span class="month-flag">🗂️ May 2026 · Content CMS</span>
+                            </div>
+
+                            <!-- SLIDE 11: Promo Games -->
+                            <div class="slide slide-3">
+                                <img src="project/ojt/may2.jpg" alt="Promotional Web Games" />
+                                <span class="month-flag">🎮 May 2026 · Promo Games</span>
+                            </div>
+
                         </div>
                         <div class="slideshow-arrows">
                             <button class="prev">‹</button>
@@ -719,7 +717,7 @@
                         <div class="slideshow-dots"></div>
                     </div>
                     <div class="slideshow-label">
-                        ⬅️ 6 slides: 2 team photos + 9 projects across 4 months
+                        ⬅️ 11 slides: 2 team photos + 9 individual projects
                     </div>
                 </div>
             </div>
@@ -855,8 +853,8 @@
                     <div class="contact-socials">
                         <a href="https://github.com/Hyacinth134" target="_blank">🐙 GitHub</a>
                         <a href="https://www.linkedin.com/in/hyacinth-cañares-a54a36417" target="_blank">💼 LinkedIn</a>
-                        <a href="https://www.facebook.com/htnicayh.malundocanares" target="_blank">🐦Facebook</a>
-                        <a href="mailto:hyacanares543@gmail.com" target="_blank ">📧 Email</a>
+                        <a href="https://www.facebook.com/htnicayh.malundocanares" target="_blank">🐦 Facebook</a>
+                        <a href="mailto:hyacanares543@gmail.com" target="_blank">📧 Email</a>
                     </div>
                 </div>
                 <form class="contact-form fade-up delay-2">
