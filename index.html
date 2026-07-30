@@ -317,12 +317,20 @@
         /* ── PROJECTS ── */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 25px;
         }
         .project-card {
-            background: rgba(255,255,255,0.03); border-radius: 18px; border: 1px solid rgba(255,255,255,0.06);
-            overflow: hidden; transition: 0.4s; position: relative;
+            background: rgba(255,255,255,0.03);
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.06);
+            overflow: hidden;
+            transition: 0.4s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 480px;
         }
         .project-card:hover {
             transform: translateY(-8px);
@@ -333,6 +341,7 @@
         .slideshow-placeholder {
             width: 100%; aspect-ratio: 16/9; position: relative; overflow: hidden;
             border-bottom: 3px solid rgba(230,36,41,0.2); cursor: pointer;
+            flex-shrink: 0;
         }
         .slideshow-placeholder .slide-track { display: flex; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94); }
         .slideshow-placeholder .slide { min-width: 100%; height: 100%; background-size: cover; background-position: center; position: relative; }
@@ -340,6 +349,8 @@
         .slide-2 { background: linear-gradient(135deg, #1a1f33 0%, #1a2a3a 100%); }
         .slide-3 { background: linear-gradient(135deg, #1a1f33 0%, #3a1a2a 100%); }
         .slide-4 { background: linear-gradient(135deg, #1a1f33 0%, #1a3a2a 100%); }
+        .slide-5 { background: linear-gradient(135deg, #1a1f33 0%, #2a3a1a 100%); }
+        .slide-6 { background: linear-gradient(135deg, #1a1f33 0%, #3a2a1a 100%); }
         .slideshow-placeholder .slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
         .slideshow-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 5; }
@@ -355,32 +366,207 @@
         }
         .slideshow-arrows button:hover { background: rgba(230,36,41,0.3); border-color: #e62429; }
 
-        .project-info { padding: 16px 18px 20px; }
+        .project-info {
+            padding: 16px 18px 14px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
         .project-info h3 { font-family: 'Bangers', cursive; font-size: 1.2rem; letter-spacing: 0.5px; margin-bottom: 4px; }
         .project-info h3 .highlight { color: #e62429; }
-        .project-tech { display: flex; flex-wrap: wrap; gap: 5px; }
+        .project-tech { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
         .project-tech span {
             background: rgba(230,36,41,0.12); color: #e62429; padding: 1px 10px; border-radius: 50px;
             font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px;
             border: 1px solid rgba(230,36,41,0.08);
         }
-        .project-info .project-tech { margin: 6px 0 8px; }
-        .project-info p { color: #9aa3c0; font-size: 0.85rem; line-height: 1.5; margin-bottom: 12px; }
-        .project-links { display: flex; gap: 12px; flex-wrap: wrap; }
-        .project-links a { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #b0b8d1; transition: 0.3s; display: flex; align-items: center; gap: 4px; }
+
+        .project-desc-short {
+            color: #9aa3c0;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            flex: 1;
+        }
+        .project-desc-short .see-more-link {
+            color: #e62429;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-block;
+            margin-left: 4px;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        .project-desc-short .see-more-link:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .project-details-expand {
+            display: none; /* Hidden by default, used only for modal data */
+        }
+
+        .project-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .project-links a {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #b0b8d1;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
         .project-links a:hover { color: #e62429; }
         .project-links a .arrow { transition: 0.3s; }
         .project-links a:hover .arrow { transform: translateX(6px); }
+        .project-links a.no-demo {
+            opacity: 0.6;
+        }
+        .project-links a.no-demo:hover {
+            color: #ff5257;
+            opacity: 1;
+        }
 
-        .project-cover {
-            width: 100%; aspect-ratio: 16/9; position: relative; overflow: hidden;
-            border-bottom: 3px solid rgba(230,36,41,0.2); display: block;
+        /* ── MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
         }
-        .project-cover img {
-            width: 100%; height: 100%; object-fit: cover; object-position: top center;
-            display: block; transition: 0.5s;
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
-        .project-card:hover .project-cover img { transform: scale(1.06); }
+        .modal-container {
+            background: #12162a;
+            border: 1px solid rgba(230,36,41,0.2);
+            border-radius: 24px;
+            max-width: 750px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 40px 45px;
+            position: relative;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.active .modal-container {
+            transform: scale(1);
+        }
+        .modal-container::-webkit-scrollbar { width: 6px; }
+        .modal-container::-webkit-scrollbar-track { background: transparent; }
+        .modal-container::-webkit-scrollbar-thumb { background: #e62429; border-radius: 10px; }
+
+        .modal-close {
+            position: sticky;
+            top: 0;
+            float: right;
+            background: none;
+            border: none;
+            color: #b0b8d1;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: 0.3s;
+            line-height: 1;
+            padding: 0 0 0 15px;
+            z-index: 10;
+        }
+        .modal-close:hover {
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .modal-body h3 {
+            font-family: 'Bangers', cursive;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        .modal-body .project-tech {
+            margin-bottom: 20px;
+        }
+        .modal-body .modal-description p {
+            color: #b0b8d1;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        .modal-body .modal-description p strong {
+            color: #fff;
+            font-weight: 700;
+        }
+        .modal-body .modal-description .detail-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: #9aa3c0;
+            font-size: 0.9rem;
+            padding: 4px 0;
+            line-height: 1.5;
+        }
+        .modal-body .modal-description .detail-feature span {
+            color: #e62429;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* ── TOAST NOTIFICATION ── */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(11, 14, 26, 0.95);
+            border: 1px solid #e62429;
+            border-radius: 12px;
+            padding: 16px 28px;
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            backdrop-filter: blur(10px);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 420px;
+        }
+        .toast-notification::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: #e62429;
+            border-radius: 12px 0 0 12px;
+        }
+        .toast-notification .toast-icon {
+            font-size: 1.4rem;
+        }
 
         /* ── CONTACT ── */
         #contact { border-top: 1px solid rgba(255,255,255,0.04); }
@@ -411,19 +597,11 @@
         footer .foot-mark { font-family: 'Bangers', cursive; color: #e62429; letter-spacing: 2px; }
 
         /* ── RESPONSIVE ── */
-        @media (max-width: 980px) {
-            nav .nav-links, nav a.cta-nav { display: none; }
-            .nav-toggle { display: flex; }
-            nav.open .nav-links {
-                display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
-                position: absolute; top: 100%; left: 0; width: 100%; background: rgba(11,14,26,0.98);
-                padding: 18px 24px 24px; border-bottom: 3px solid rgba(230,36,41,0.3);
-            }
-            nav.open a.cta-nav { display: inline-block; margin-top: 10px; }
-            nav.open .nav-links a.nav-link { padding: 10px 0; width: 100%; }
+        @media (max-width: 1200px) {
+            .projects-grid { grid-template-columns: repeat(4, 1fr); }
         }
-
         @media (max-width: 1024px) {
+            .projects-grid { grid-template-columns: repeat(2, 1fr); }
             .hero .container { grid-template-columns: 1fr; text-align: center; }
             .hero-content p.lede { margin-left: auto; margin-right: auto; }
             .hero-buttons { justify-content: center; }
@@ -440,15 +618,30 @@
             .ojt-showcase-visual .slideshow-placeholder {
                 aspect-ratio: 16/9;
             }
-            .projects-grid {
-                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            .toast-notification {
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                max-width: 100%;
             }
         }
 
+        @media (max-width: 980px) {
+            nav .nav-links, nav a.cta-nav { display: none; }
+            .nav-toggle { display: flex; }
+            nav.open .nav-links {
+                display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+                position: absolute; top: 100%; left: 0; width: 100%; background: rgba(11,14,26,0.98);
+                padding: 18px 24px 24px; border-bottom: 3px solid rgba(230,36,41,0.3);
+            }
+            nav.open a.cta-nav { display: inline-block; margin-top: 10px; }
+            nav.open .nav-links a.nav-link { padding: 10px 0; width: 100%; }
+        }
+
         @media (max-width: 640px) {
+            .projects-grid { grid-template-columns: 1fr 1fr; }
             .hero-content h1 { font-size: 2.8rem; }
             .section-title { font-size: 2.1rem; }
-            .projects-grid { grid-template-columns: 1fr 1fr; }
             .skills-grid { grid-template-columns: 1fr; }
             section { padding: 60px 0; }
             .ojt-showcase { padding: 20px 16px; gap: 30px; }
@@ -456,6 +649,13 @@
             .month-flag { font-size: 0.55rem; padding: 3px 10px; top: 8px; left: 8px; }
             .project-info h3 { font-size: 1rem; }
             .project-info p { font-size: 0.75rem; }
+            .project-card { min-height: 400px; }
+            .modal-container { padding: 25px 20px; }
+            .modal-body h3 { font-size: 1.6rem; }
+            .toast-notification {
+                font-size: 0.85rem;
+                padding: 14px 20px;
+            }
         }
         @media (max-width: 480px) {
             .projects-grid { grid-template-columns: 1fr; }
@@ -643,67 +843,46 @@
                     <div class="slideshow-placeholder" data-slideshow="ojt-featured">
                         <div class="slide-track">
 
-                            <!-- SLIDE 1: Team Photo 1 -->
                             <div class="slide slide-1">
                                 <img src="project/ojt/team1.jpg" alt="OJT Team" />
                                 <span class="month-flag">🤝 Team</span>
                             </div>
-
-                            <!-- SLIDE 2: Team Photo 2 -->
                             <div class="slide slide-2">
                                 <img src="project/ojt/team2.jpg" alt="OJT Team with Manager and Supervisor" />
                                 <span class="month-flag">🤝 Manager &amp; Supervisor</span>
                             </div>
-
-                            <!-- SLIDE 3: Tarpaulin Calculator -->
                             <div class="slide slide-3">
                                 <img src="project/ojt/feb1.jpg" alt="Tarpaulin Calculator" />
                                 <span class="month-flag">📐 Feb 2026 · Tarpaulin Calc</span>
                             </div>
-
-                            <!-- SLIDE 4: Sintra Calculator -->
                             <div class="slide slide-4">
                                 <img src="project/ojt/feb2.jpg" alt="Sintra Calculator" />
                                 <span class="month-flag">📐 Feb 2026 · Sintra Calc</span>
                             </div>
-
-                            <!-- SLIDE 5: T-Shirt Preview -->
                             <div class="slide slide-1">
                                 <img src="project/ojt/feb3.jpg" alt="T-Shirt Preview Tool" />
                                 <span class="month-flag">👕 Feb 2026 · T-Shirt Preview</span>
                             </div>
-
-                            <!-- SLIDE 6: POS System -->
                             <div class="slide slide-2">
                                 <img src="project/ojt/mar1.jpg" alt="Point-of-Sale System" />
                                 <span class="month-flag">🧾 Mar 2026 · POS System</span>
                             </div>
-
-                            <!-- SLIDE 7: Dental Clinic -->
                             <div class="slide slide-3">
                                 <img src="project/ojt/mar2.jpg" alt="Dental Clinic Management System" />
                                 <span class="month-flag">🦷 Mar 2026 · Dental Clinic</span>
                             </div>
-
-                            <!-- SLIDE 8: Booking Portal -->
                             <div class="slide slide-4">
                                 <img src="project/ojt/apr1.jpg" alt="Photography Booking Portal" />
                                 <span class="month-flag">📸 Apr 2026 · Booking Portal</span>
                             </div>
-
-                            <!-- SLIDE 9: Inventory Module -->
                             <div class="slide slide-1">
                                 <img src="project/ojt/apr2.jpg" alt="Inventory Module" />
                                 <span class="month-flag">📦 Apr 2026 · Inventory Module</span>
                             </div>
-
-                            <!-- SLIDE 10: Content CMS -->
                             <div class="slide slide-2">
                                 <img src="project/ojt/may1.jpg" alt="Content Creation CMS" />
                                 <span class="month-flag">🗂️ May 2026 · Content CMS</span>
                             </div>
-
-                            <!-- SLIDE 11: Promo Games -->
                             <div class="slide slide-3">
                                 <img src="project/ojt/may2.jpg" alt="Promotional Web Games" />
                                 <span class="month-flag">🎮 May 2026 · Promo Games</span>
@@ -729,11 +908,11 @@
         <div class="container">
             <span class="eyebrow eyebrow-blue fade-up">Portfolio</span>
             <h2 class="section-title fade-up"><span class="accent">✦</span> Web <span class="accent-blue">Projects</span></h2>
-            <p class="section-sub fade-up delay-1">Each project features a slideshow showcasing key features — hover to explore.</p>
+            <p class="section-sub fade-up delay-1">Each project features a slideshow — click <strong>SEE MORE</strong> after the description to open a detailed view.</p>
 
             <div class="projects-grid">
 
-                <!-- PROJECT 1 -->
+                <!-- PROJECT 1: CHMSU IPMO -->
                 <div class="project-card fade-up delay-2">
                     <div class="slideshow-placeholder" data-slideshow="0">
                         <div class="slide-track">
@@ -748,14 +927,29 @@
                     <div class="project-info">
                         <h3><span class="highlight">CHMSU</span> IPMO Portal</h3>
                         <div class="project-tech"><span>HTML</span><span>CSS</span><span>Javascript</span><span>PHP</span><span>MySQL</span></div>
-                        <p>A web-based online application system for CHMSU-IPMO Services, streamlining IP service requests with real-time monitoring, a document repository, and analytics.</p>
+                        <p class="project-desc-short">
+                            A web-based online application system for CHMSU-IPMO Services, streamlining IP service requests with real-time monitoring, document repository, and analytics.
+                            <span class="see-more-link" data-project="0">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>📌 Background</strong><br>
+                            The Intellectual Property Management Office (IPMO) of Carlos Hilado Memorial State University (CHMSU) is authorized to protect, manage, and promote intellectual property (IP) assets generated by the institution’s stakeholders. These assets include utility models, copyrights, trademarks, and industrial designs that have potential for public benefit. However, the current processes are primarily manual or semi-digital, leading to inefficiencies, delays, miscommunication, and limited access for stakeholders.</p>
+                            <p>The existing system relies heavily on physical document submission, face-to-face inquiries, Google Forms for submission, and Google Drive for data storage. As a result, the office encounters delayed processing, lack of transparency in application status, and limited accessibility for remote stakeholders — hindering service delivery and discouraging innovators from engaging with the office.</p>
+                            <p><strong>🎯 Objectives</strong><br>
+                            The main objective is to design, develop, and evaluate a Web-Based Online Application System for CHMSU-IPMO Services with the following features:</p>
+                            <div class="detail-feature"><span>✓</span> Online Application process for IP Services</div>
+                            <div class="detail-feature"><span>✓</span> Real-time monitoring of application status</div>
+                            <div class="detail-feature"><span>✓</span> Document Repository for secure storage</div>
+                            <div class="detail-feature"><span>✓</span> Data Analytics for informed decision-making</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Full-stack developer — designed the database schema, built the admin panel, and implemented the request lifecycle.</p>
+                        </div>
                         <div class="project-links">
                             <a href="https://chmsu-ipmo.42web.io/ipmo/login.php#login" target="_blank">Live Demo <span class="arrow">→</span></a>
                         </div>
                     </div>
                 </div>
 
-                <!-- PROJECT 2 -->
+                <!-- PROJECT 2: HGS Beach Resort -->
                 <div class="project-card fade-up delay-3">
                     <div class="slideshow-placeholder" data-slideshow="1">
                         <div class="slide-track">
@@ -770,57 +964,105 @@
                     <div class="project-info">
                         <h3><span class="highlight">HGS</span> Beach Resort</h3>
                         <div class="project-tech"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>PHP</span><span>MySQL</span></div>
-                        <p>A digitalized reservation management system covering room &amp; service browsing, reservations, payments, guest feedback, and sales reporting.</p>
+                        <p class="project-desc-short">
+                            A digitalized reservation management system covering room &amp; service browsing, reservations, payments, guest feedback, and sales reporting.
+                            <span class="see-more-link" data-project="1">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>📌 Background</strong><br>
+                            HGS Beach Resort is one of the newest beachfront locations in Himamaylan City, offering comfortable lodging, beach access, and a range of recreational activities. Currently, the resort uses a manual reservation system to record customer information and manage bookings, with payments through cash and GCash. This process is prone to human error, disorganization, difficulties in data retrieval, and challenges in tracking customer preferences and feedback.</p>
+                            <p>The reliance on physical record paper for bookings increases the risk of mistakes and consumes more time. Recognizing these issues, a faster and more reliable reservation management system is essential to streamline communication, reduce errors, and improve information accessibility. This digitized, expedited, and automated reservation process will enhance the customer experience, leading to happier guests and increased loyalty.</p>
+                            <p><strong>🎯 Objectives</strong><br>
+                            The study aims to design and develop a digitalized efficient reservation management solution for HGS Beach Resort with the following features:</p>
+                            <div class="detail-feature"><span>✓</span> Room and Service browsing</div>
+                            <div class="detail-feature"><span>✓</span> Online Reservation system</div>
+                            <div class="detail-feature"><span>✓</span> Payment Transaction processing</div>
+                            <div class="detail-feature"><span>✓</span> Guest Feedback &amp; Rating</div>
+                            <div class="detail-feature"><span>✓</span> Sales Report generation</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Lead developer — built the reservation engine, integrated payment gateway, and created the admin reporting module.</p>
+                        </div>
                         <div class="project-links">
-                            <a href="#">Live Demo <span class="arrow">→</span></a>
+                            <a href="#" class="no-demo">Live Demo <span class="arrow">→</span></a>
                         </div>
                     </div>
                 </div>
 
-                <!-- PROJECT 3 Booking System -->
+                <!-- PROJECT 3: Luna Booking System -->
                 <div class="project-card fade-up delay-4">
                     <div class="slideshow-placeholder" data-slideshow="2">
                         <div class="slide-track">
-                            <div class="slide slide-2"><img src="project/free/p1-a.jpg" alt="Project 3 placeholder 2"/></div>
-                            <div class="slide slide-4"><img src="project/free/p1-b.jpg" alt="Project 3 placeholder 4"/></div>
-                            <div class="slide slide-3"><img src="project/free/p1-c.jpg" alt="Project 3 placeholder 3"/></div>
-                            <div class="slide slide-5"><img src="project/free/p1-d.jpg" alt="Project 3 placeholder 5"/></div>
-                            <div class="slide slide-1"><img src="project/free/p1-e.jpg" alt="Project 3 placeholder 1"/></div>
+                            <div class="slide slide-2"><img src="project/free/p1-a.jpg" alt="Luna Booking System dashboard"/></div>
+                            <div class="slide slide-4"><img src="project/free/p1-b.jpg" alt="Luna Booking System calendar view"/></div>
+                            <div class="slide slide-3"><img src="project/free/p1-c.jpg" alt="Luna Booking System booking form"/></div>
+                            <div class="slide slide-5"><img src="project/free/p1-d.jpg" alt="Luna Booking System confirmation"/></div>
+                            <div class="slide slide-1"><img src="project/free/p1-e.jpg" alt="Luna Booking System admin panel"/></div>
+                            <div class="slide slide-6"><img src="project/free/p1-f.jpg" alt="Luna Booking System mobile view"/></div>
                         </div>
                         <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
                         <div class="slideshow-dots"></div>
                     </div>
                     <div class="project-info">
                         <h3><span class="highlight">Luna</span> Booking System</h3>
-                        <div class="project-tech"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
-                        <p><strong>Luna</strong> is a modern, user-focused booking system designed to make scheduling fast, intuitive, and visually calm. Built with a minimal and elegant interface, Luna allows users to effortlessly browse availability, select time slots, and manage bookings without friction.</p>
+                        <div class="project-tech"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>PHP</span><span>MySQL</span></div>
+                        <p class="project-desc-short">
+                            A modern, user-focused booking system designed to make scheduling fast, intuitive, and visually calm.
+                            <span class="see-more-link" data-project="2">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>🔍 Key Features:</strong></p>
+                            <div class="detail-feature"><span>✓</span> Real-time availability &amp; time-slot selection</div>
+                            <div class="detail-feature"><span>✓</span> Automated email confirmations</div>
+                            <div class="detail-feature"><span>✓</span> Admin dashboard for managing reservations</div>
+                            <div class="detail-feature"><span>✓</span> Fully mobile-responsive design</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Full-stack developer — designed the UI/UX, built the booking engine, and implemented the admin panel.</p>
+                        </div>
                         <div class="project-links">
-                            <a href="#">Live Demo <span class="arrow">→</span></a>
+                            <a href="https://hyacinthmc-dev.github.io/luna-booking/" target="_blank">Live Demo <span class="arrow">→</span></a>
                         </div>
                     </div>
                 </div>
 
-                <!-- PROJECT 4 (Lorem Ipsum) -->
+                <!-- PROJECT 4: Petri Dish -->
                 <div class="project-card fade-up delay-1">
                     <div class="slideshow-placeholder" data-slideshow="3">
                         <div class="slide-track">
-                            <div class="slide slide-1"><img src="https://picsum.photos/seed/project4/600/400" alt="Project 4 placeholder"/></div>
-                            <div class="slide slide-2"><img src="https://picsum.photos/seed/project4b/600/400" alt="Project 4 placeholder 2"/></div>
+                            <div class="slide slide-1"><img src="project/free/p2-a.jpg" alt="Petri dish 1"/></div>
+                            <div class="slide slide-2"><img src="project/free/p2-b.jpg" alt="Petri dish 2"/></div>
+                            <div class="slide slide-3"><img src="project/free/p2-c.jpg" alt="Petri dish 3"/></div>
+                            <div class="slide slide-4"><img src="project/free/p2-d.jpg" alt="Petri dish 4"/></div>
+                            <div class="slide slide-5"><img src="project/free/p2-e.jpg" alt="Petri dish 5"/></div>
                         </div>
                         <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
                         <div class="slideshow-dots"></div>
                     </div>
                     <div class="project-info">
-                        <h3><span class="highlight">Consectetur</span> Adipiscing</h3>
-                        <div class="project-tech"><span>Vue.js</span><span>Firebase</span></div>
-                        <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        <h3><span class="highlight">Petri</span> — reaction-diffusion dish</h3>
+                        <div class="project-tech"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Canvas</span></div>
+                        <p class="project-desc-short">
+                            A generative art toy that grows real chemistry instead of pre-baked animation — powered by the Gray-Scott equations.
+                            <span class="see-more-link" data-project="3">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>🔬 Description</strong><br>
+                            Petri is a generative art toy that grows real chemistry instead of pre-baked animation. Under the hood, two virtual compounds diffuse and react across a grid using the Gray-Scott equations — the same math that describes how natural patterns like coral, animal coats, and bacterial colonies self-organize. Click into the dish to seed growth, pick a preset to set the chemical rules, and watch organic patterns emerge, spread, and settle entirely on their own. No two runs ever look quite the same.</p>
+                            <p><strong>✨ Key Features</strong></p>
+                            <div class="detail-feature"><span>✓</span> Real reaction-diffusion simulation — powered by the Gray-Scott model (feed rate + kill rate), not scripted or randomized shapes</div>
+                            <div class="detail-feature"><span>✓</span> Interactive seeding — click or drag anywhere in the dish to introduce new growth exactly where you want it</div>
+                            <div class="detail-feature"><span>✓</span> Live rule-switching presets — Coral, Mitosis, Worms, Mazes, and Bubbles; switching presets doesn't reset the dish, so an existing pattern morphs into the new rule set in real time</div>
+                            <div class="detail-feature"><span>✓</span> Manual chemistry control — fine-tune Feed (f) and Kill (k) rates directly with lab-style mono readouts</div>
+                            <div class="detail-feature"><span>✓</span> 5 color cultures — Bioluminescent, Coral Reef, Mono Ink, Blood Moon, and Arctic, each a distinct gradient mapped to chemical concentration</div>
+                            <div class="detail-feature"><span>✓</span> Dish management — Reseed to add fresh growth points, Clear dish to start over, Save image to export a PNG snapshot</div>
+                            <div class="detail-feature"><span>✓</span> Self-contained — a single HTML file, no external libraries; the simulation, rendering, and UI all run client-side</div>
+                            <div class="detail-feature"><span>✓</span> Responsive — the control panel adapts from a right-side rail on desktop to a bottom bar on mobile</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Creator — designed and implemented the entire simulation, UI, and visual design from scratch.</p>
+                        </div>
                         <div class="project-links">
-                            <a href="#">Live Demo <span class="arrow">→</span></a>
+                            <a href="https://hyacinthmc-dev.github.io/petri/" target="_blank">Live Demo <span class="arrow">→</span></a>
                         </div>
                     </div>
                 </div>
 
-                <!-- PROJECT 5 (Lorem Ipsum) -->
+                <!-- PROJECT 5 -->
                 <div class="project-card fade-up delay-2">
                     <div class="slideshow-placeholder" data-slideshow="4">
                         <div class="slide-track">
@@ -833,9 +1075,118 @@
                     <div class="project-info">
                         <h3><span class="highlight">Sed Do</span> Eiusmod Tempor</h3>
                         <div class="project-tech"><span>Python</span><span>Django</span><span>PostgreSQL</span></div>
-                        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                        <p class="project-desc-short">
+                            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                            <span class="see-more-link" data-project="4">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>🔍 Key Features:</strong></p>
+                            <div class="detail-feature"><span>✓</span> Django REST API backend</div>
+                            <div class="detail-feature"><span>✓</span> PostgreSQL database with migrations</div>
+                            <div class="detail-feature"><span>✓</span> Admin interface for content management</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Back-end developer — designed the API, database schema, and admin panel.</p>
+                        </div>
                         <div class="project-links">
-                            <a href="#">Live Demo <span class="arrow">→</span></a>
+                            <a href="#" class="no-demo">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 6: EcoTrack -->
+                <div class="project-card fade-up delay-3">
+                    <div class="slideshow-placeholder" data-slideshow="5">
+                        <div class="slide-track">
+                            <div class="slide slide-1"><img src="https://picsum.photos/seed/ecotrack1/600/400" alt="EcoTrack Dashboard"/></div>
+                            <div class="slide slide-2"><img src="https://picsum.photos/seed/ecotrack2/600/400" alt="EcoTrack Analytics"/></div>
+                            <div class="slide slide-3"><img src="https://picsum.photos/seed/ecotrack3/600/400" alt="EcoTrack Reports"/></div>
+                            <div class="slide slide-4"><img src="https://picsum.photos/seed/ecotrack4/600/400" alt="EcoTrack Community"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">EcoTrack</span> Sustainability</h3>
+                        <div class="project-tech"><span>React</span><span>D3.js</span><span>Node.js</span><span>MongoDB</span></div>
+                        <p class="project-desc-short">
+                            A real-time environmental sustainability dashboard that empowers organizations to monitor, analyze, and reduce their carbon footprint.
+                            <span class="see-more-link" data-project="5">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>🔍 Key Features:</strong></p>
+                            <div class="detail-feature"><span>✓</span> Real-time carbon footprint tracking</div>
+                            <div class="detail-feature"><span>✓</span> Interactive D3.js visualizations</div>
+                            <div class="detail-feature"><span>✓</span> Goal setting &amp; progress monitoring</div>
+                            <div class="detail-feature"><span>✓</span> Community benchmarking &amp; best practices</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Full-stack developer — built the React front-end, D3 charts, and Node.js API with MongoDB.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="no-demo">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 7: FitForge -->
+                <div class="project-card fade-up delay-4">
+                    <div class="slideshow-placeholder" data-slideshow="6">
+                        <div class="slide-track">
+                            <div class="slide slide-2"><img src="https://picsum.photos/seed/fitforge1/600/400" alt="FitForge Dashboard"/></div>
+                            <div class="slide slide-3"><img src="https://picsum.photos/seed/fitforge2/600/400" alt="FitForge Workout"/></div>
+                            <div class="slide slide-4"><img src="https://picsum.photos/seed/fitforge3/600/400" alt="FitForge Nutrition"/></div>
+                            <div class="slide slide-1"><img src="https://picsum.photos/seed/fitforge4/600/400" alt="FitForge Community"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">FitForge</span> Fitness Platform</h3>
+                        <div class="project-tech"><span>React Native</span><span>Firebase</span><span>Express.js</span></div>
+                        <p class="project-desc-short">
+                            A comprehensive fitness and wellness platform designed to help users achieve their health goals through personalized plans and community engagement.
+                            <span class="see-more-link" data-project="6">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>🔍 Key Features:</strong></p>
+                            <div class="detail-feature"><span>✓</span> AI-powered workout recommendations</div>
+                            <div class="detail-feature"><span>✓</span> Barcode scanner for food logging</div>
+                            <div class="detail-feature"><span>✓</span> Wearable device integration</div>
+                            <div class="detail-feature"><span>✓</span> Social challenges &amp; achievement sharing</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Mobile developer — built the React Native app with Firebase backend and Express API.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="no-demo">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 8: EduBridge -->
+                <div class="project-card fade-up delay-1">
+                    <div class="slideshow-placeholder" data-slideshow="7">
+                        <div class="slide-track">
+                            <div class="slide slide-3"><img src="https://picsum.photos/seed/edubridge1/600/400" alt="EduBridge Course Management"/></div>
+                            <div class="slide slide-4"><img src="https://picsum.photos/seed/edubridge2/600/400" alt="EduBridge Student View"/></div>
+                            <div class="slide slide-1"><img src="https://picsum.photos/seed/edubridge3/600/400" alt="EduBridge Analytics"/></div>
+                            <div class="slide slide-2"><img src="https://picsum.photos/seed/edubridge4/600/400" alt="EduBridge Interactive Module"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">EduBridge</span> Learning System</h3>
+                        <div class="project-tech"><span>Angular</span><span>TypeScript</span><span>Spring Boot</span><span>PostgreSQL</span></div>
+                        <p class="project-desc-short">
+                            A modern, feature-rich Learning Management System (LMS) built to transform the educational experience for both instructors and students.
+                            <span class="see-more-link" data-project="7">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>🔍 Key Features:</strong></p>
+                            <div class="detail-feature"><span>✓</span> Interactive course builder with multimedia</div>
+                            <div class="detail-feature"><span>✓</span> Personalized student dashboards</div>
+                            <div class="detail-feature"><span>✓</span> Automated grading &amp; feedback engine</div>
+                            <div class="detail-feature"><span>✓</span> Comprehensive reporting &amp; analytics</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Full-stack developer — built the Angular front-end, Spring Boot REST API, and PostgreSQL database.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="no-demo">Live Demo <span class="arrow">→</span></a>
                         </div>
                     </div>
                 </div>
@@ -843,6 +1194,16 @@
             </div>
         </div>
     </section>
+
+    <!-- ─── MODAL ─── -->
+    <div class="modal-overlay" id="projectModal">
+        <div class="modal-container">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-body" id="modalBody">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
 
     <!-- ─── CONTACT ─── -->
     <section id="contact">
@@ -903,7 +1264,6 @@
                 const nextBtn = container.querySelector('.next');
                 let current = 0;
                 const total = slides.length;
-
                 if (total === 0) return;
 
                 for (let i = 0; i < total; i++) {
@@ -967,6 +1327,101 @@
                     const heading = card.querySelector('h4');
                     if (heading) {
                         heading.style.textShadow = 'none';
+                    }
+                });
+            });
+
+            // ── MODAL LOGIC ──
+            const modal = document.getElementById('projectModal');
+            const modalBody = document.getElementById('modalBody');
+            const modalClose = document.getElementById('modalClose');
+            const seeMoreLinks = document.querySelectorAll('.see-more-link');
+
+            function openModal(projectIndex) {
+                const card = document.querySelector(`.see-more-link[data-project="${projectIndex}"]`).closest('.project-card');
+                if (!card) return;
+
+                const title = card.querySelector('h3')?.innerHTML || 'Project Details';
+                const tech = card.querySelector('.project-tech')?.innerHTML || '';
+                const details = card.querySelector('.project-details-expand')?.innerHTML || '<p>No additional details available.</p>';
+
+                modalBody.innerHTML = `
+                    <h3>${title}</h3>
+                    <div class="project-tech">${tech}</div>
+                    <div class="modal-description">${details}</div>
+                `;
+
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            seeMoreLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const projectIndex = link.getAttribute('data-project');
+                    if (projectIndex !== null) {
+                        openModal(projectIndex);
+                    }
+                });
+            });
+
+            modalClose.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+
+            // ── TOAST NOTIFICATION FOR NO DEMO ──
+            function showToast(message) {
+                // Remove existing toast if any
+                const existingToast = document.querySelector('.toast-notification');
+                if (existingToast) {
+                    existingToast.remove();
+                }
+
+                const toast = document.createElement('div');
+                toast.className = 'toast-notification';
+                toast.innerHTML = `
+                    <span class="toast-icon">⛔</span>
+                    <span>${message}</span>
+                `;
+                document.body.appendChild(toast);
+
+                // Trigger reflow to enable animation
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    toast.style.opacity = '1';
+                    toast.style.transform = 'translateY(0)';
+                }, 10);
+
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                }, 2800);
+            }
+
+            // Intercept Live Demo clicks
+            document.querySelectorAll('.project-links a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    // If the link has the 'no-demo' class or href is just '#'
+                    if (link.classList.contains('no-demo') || link.getAttribute('href') === '#') {
+                        e.preventDefault();
+                        showToast('No live demo available for this project.');
                     }
                 });
             });
