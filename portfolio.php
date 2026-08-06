@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Hyacinth Cañares | Web Developer</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Roboto:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+
+    <style>
+        /* ── RESET & BASE ── */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #0b0e1a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        a { text-decoration: none; color: inherit; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0b0e1a; }
+        ::-webkit-scrollbar-thumb { background: #e62429; border-radius: 10px; }
+
+        .mono { font-family: 'Space Mono', monospace; }
+
+        /* ── AMBIENT BACKGROUND ── */
+        .web-pattern {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(230, 36, 41, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(41, 98, 255, 0.04) 0%, transparent 40%),
+                repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.008) 20px, rgba(255,255,255,0.008) 21px),
+                repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(255,255,255,0.008) 20px, rgba(255,255,255,0.008) 21px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        .container { max-width: 1240px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+        /* ── HEXAGON MOTIF ── */
+        .hex-clip { clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%); }
+
+        /* ── HEADER / NAV ── */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            background: rgba(11, 14, 26, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 3px solid rgba(230, 36, 41, 0.3);
+            padding: 12px 0;
+        }
+        header .container { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+        .logo-mark { display: flex; align-items: center; gap: 12px; }
+        .logo-mark .hex-wrap {
+            position: relative; width: 44px; height: 44px; flex-shrink: 0;
+        }
+        .logo-mark .hex-wrap .hex-bg {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, #e62429, #2962ff);
+        }
+        .logo-mark .hex-wrap .hex-bg,
+        .logo-mark .hex-wrap .hex-inner { clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%); }
+        .logo-mark .hex-wrap .hex-inner {
+            position: absolute; inset: 2px; background: #0b0e1a;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 1rem; letter-spacing: -1px; color: #fff;
+        }
+        .logo-mark .logo-word {
+            font-family: 'Bangers', cursive; font-size: 1.3rem; letter-spacing: 1.5px;
+            color: #fff; text-transform: uppercase; line-height: 1;
+        }
+        .logo-mark .logo-word small {
+            display: block; font-family: 'Space Mono', monospace; font-size: 0.55rem;
+            letter-spacing: 3px; color: #5f8bff; text-transform: uppercase; margin-top: 3px; font-weight: 700;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 38px;
+        }
+        nav a.nav-link {
+            font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px;
+            color: #b0b8d1; transition: 0.3s; position: relative; padding-bottom: 4px;
+        }
+        nav a.nav-link::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px;
+            background: #e62429; transition: 0.3s;
+        }
+        nav a.nav-link:hover { color: #fff; }
+        nav a.nav-link:hover::after { width: 100%; }
+
+        nav a.cta-nav {
+            background: #e62429; color: #fff; padding: 8px 20px; border-radius: 50px;
+            font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px;
+            box-shadow: 0 4px 20px rgba(230, 36, 41, 0.35); transition: 0.3s;
+        }
+        nav a.cta-nav:hover { background: #ff2d34; box-shadow: 0 6px 30px rgba(230, 36, 41, 0.5); transform: translateY(-2px); }
+
+        .nav-toggle {
+            display: none; width: 40px; height: 40px; border: none; background: transparent;
+            cursor: pointer; flex-direction: column; justify-content: center; gap: 5px; align-items: center;
+        }
+        .nav-toggle span { width: 24px; height: 2px; background: #fff; transition: 0.3s; }
+        .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .nav-toggle.open span:nth-child(2) { opacity: 0; }
+        .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* ── EYEBROW BADGES ── */
+        .eyebrow {
+            display: inline-flex; align-items: center; gap: 8px; padding: 6px 18px;
+            border-radius: 50px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; margin-bottom: 18px; font-family: 'Space Mono', monospace;
+        }
+        .eyebrow-red { background: rgba(230, 36, 41, 0.12); border: 1px solid rgba(230, 36, 41, 0.35); color: #ff5257; }
+        .eyebrow-blue { background: rgba(41, 98, 255, 0.12); border: 1px solid rgba(41, 98, 255, 0.35); color: #5f8bff; }
+        .eyebrow .dot-live {
+            width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+            box-shadow: 0 0 8px currentColor; animation: pulse 1.8s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+
+        /* ── HERO ── */
+        .hero { padding: 150px 0 90px; min-height: 100vh; display: flex; align-items: center; position: relative; }
+        .hero .container { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 50px; align-items: center; }
+
+        .hero-content h1 {
+            font-family: 'Bangers', cursive; font-size: 4rem; line-height: 1.08; letter-spacing: 2px;
+            background: linear-gradient(135deg, #e62429 30%, #2962ff 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            margin-bottom: 16px;
+        }
+        .hero-content .tagline { font-size: 1.2rem; color: #b0b8d1; margin-bottom: 4px; }
+        .hero-content .tagline strong { color: #fff; font-weight: 700; }
+        .hero-content p.lede { font-size: 1.05rem; line-height: 1.7; color: #9aa3c0; max-width: 480px; margin: 18px 0 32px; }
+
+        .hero-buttons { display: flex; flex-wrap: wrap; gap: 16px; }
+        .btn-primary {
+            display: inline-block; background: #e62429; color: #fff; padding: 14px 38px;
+            border-radius: 50px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+            font-size: 0.9rem; border: none; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 4px 24px rgba(230, 36, 41, 0.35);
+        }
+        .btn-primary:hover { background: #ff2d34; transform: translateY(-3px); box-shadow: 0 8px 36px rgba(230, 36, 41, 0.5); }
+        .btn-secondary {
+            display: inline-block; background: transparent; color: #fff; padding: 14px 38px;
+            border-radius: 50px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+            font-size: 0.9rem; border: 2px solid rgba(255, 255, 255, 0.15); cursor: pointer; transition: 0.3s;
+        }
+        .btn-secondary:hover { border-color: #e62429; color: #e62429; transform: translateY(-3px); }
+
+        /* hero visual */
+        .hero-visual { display: flex; justify-content: center; align-items: center; position: relative; }
+        .hex-photo-outer {
+            position: relative; width: 320px; height: 360px;
+            background: linear-gradient(150deg, #e62429, #2962ff);
+            clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+        }
+        .hex-photo-inner {
+            position: absolute; inset: 4px; overflow: hidden; background: #12162a;
+            clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+        }
+        .hex-photo-inner img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+        .hero-visual .ghost-hex {
+            position: absolute; width: 420px; height: 470px; border: 2px dashed rgba(230, 36, 41, 0.14);
+            clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+            animation: spin-slow 40s linear infinite;
+        }
+        @keyframes spin-slow { to { transform: rotate(360deg); } }
+        .hero-visual .tag-badge {
+            position: absolute; bottom: 6%; left: 50%; transform: translateX(-50%);
+            background: rgba(11,14,26,0.9); border: 1px solid rgba(230,36,41,0.3);
+            padding: 6px 18px; border-radius: 50px; font-size: 0.7rem; letter-spacing: 2px;
+            color: #ff5257; white-space: nowrap;
+        }
+
+        /* ── SECTION TITLES ── */
+        .section-title {
+            font-family: 'Bangers', cursive; font-size: 2.8rem; letter-spacing: 2px;
+            margin-bottom: 12px; display: flex; align-items: center; gap: 16px;
+        }
+        .section-title .accent { color: #e62429; }
+        .section-title .accent-blue { color: #2962ff; }
+        .section-sub {
+            color: #9aa3c0; font-size: 1.02rem; margin-bottom: 48px;
+            border-left: 4px solid #e62429; padding-left: 20px; max-width: 640px;
+        }
+
+        section { padding: 90px 0; }
+        section#home { padding: 0; }
+
+        /* ── ABOUT ── */
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: start; }
+        .about-text p { color: #9aa3c0; font-size: 1.05rem; line-height: 1.8; margin-bottom: 18px; }
+        .about-text .web-quote {
+            font-family: 'Bangers', cursive; font-size: 1.5rem; color: #e62429; letter-spacing: 1px;
+            border-left: 4px solid #2962ff; padding-left: 20px; margin: 24px 0;
+        }
+        .about-fact-list { display: flex; flex-direction: column; gap: 18px; }
+        .about-fact {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 18px 22px; display: flex; gap: 16px; align-items: flex-start;
+        }
+        .about-fact .hex-icon {
+            width: 34px; height: 34px; flex-shrink: 0; background: rgba(230,36,41,0.15);
+            clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+            display: flex; align-items: center; justify-content: center; font-size: 0.95rem;
+        }
+        .about-fact h4 { font-size: 0.95rem; margin-bottom: 4px; color: #fff; }
+        .about-fact p { color: #9aa3c0; font-size: 0.9rem; line-height: 1.5; margin: 0; }
+
+        /* ── SKILLS ── */
+        .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .skill-group {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px; padding: 28px 26px;
+            transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            transform-style: preserve-3d;
+            will-change: transform;
+            cursor: default;
+        }
+        .skill-group:hover {
+            border-color: rgba(230, 36, 41, 0.4);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4), inset 0 0 30px rgba(230,36,41,0.03);
+            transform: translateY(-4px);
+        }
+        .skill-group h4 {
+            font-family: 'Space Mono', monospace; font-size: 0.8rem; text-transform: uppercase;
+            letter-spacing: 2px; color: #5f8bff; margin-bottom: 18px;
+            transition: text-shadow 0.3s ease;
+        }
+        .skill-group .tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .skill-group .tags span {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            padding: 7px 16px; border-radius: 50px; font-size: 0.83rem; font-weight: 700;
+            color: #b0b8d1; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-block;
+            animation: float-tag 6s ease-in-out infinite;
+        }
+        .skill-group .tags span:hover {
+            border-color: #e62429; color: #fff; background: rgba(230,36,41,0.12);
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 8px 24px rgba(230,36,41,0.15);
+        }
+        .skill-group .tags span:nth-child(1) { animation-delay: 0s; }
+        .skill-group .tags span:nth-child(2) { animation-delay: 0.6s; }
+        .skill-group .tags span:nth-child(3) { animation-delay: 1.2s; }
+        .skill-group .tags span:nth-child(4) { animation-delay: 0.3s; }
+        .skill-group .tags span:nth-child(5) { animation-delay: 0.9s; }
+        .skill-group .tags span:nth-child(6) { animation-delay: 1.5s; }
+        .skill-group .tags span:nth-child(7) { animation-delay: 0.7s; }
+        .skill-group .tags span:nth-child(8) { animation-delay: 1.3s; }
+
+        @keyframes float-tag {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+        }
+
+        /* ── EXPERIENCE ── */
+        .ojt-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 28px;
+            padding: 40px 44px;
+            margin-top: 10px;
+        }
+        .ojt-showcase-text h3 {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .ojt-showcase-text .ojt-narrative p {
+            color: #b0b8d1;
+            font-size: 0.98rem;
+            line-height: 1.8;
+            margin-bottom: 18px;
+        }
+        .ojt-showcase-text .ojt-narrative p:last-of-type {
+            margin-bottom: 0;
+        }
+        .ojt-showcase-text .ojt-narrative strong {
+            color: #fff;
+        }
+
+        .ojt-showcase-visual .slideshow-placeholder {
+            border-radius: 16px;
+            aspect-ratio: 4/3;
+            border: 2px solid rgba(230,36,41,0.2);
+            overflow: hidden;
+        }
+        .ojt-showcase-visual .slideshow-label {
+            text-align: center;
+            margin-top: 12px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            color: #4a5270;
+            letter-spacing: 1px;
+        }
+
+        .month-flag {
+            position: absolute; top: 14px; left: 14px; z-index: 5;
+            font-family: 'Space Mono', monospace; font-size: 0.72rem; letter-spacing: 1.5px;
+            text-transform: uppercase; color: #fff; background: rgba(11,14,26,0.8);
+            backdrop-filter: blur(6px); border: 1px solid rgba(230,36,41,0.5);
+            padding: 5px 16px; border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        /* ── PROJECTS ── */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+        .project-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.06);
+            overflow: hidden;
+            transition: 0.4s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 480px;
+        }
+        .project-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(230,36,41,0.25);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .slideshow-placeholder {
+            width: 100%; aspect-ratio: 16/9; position: relative; overflow: hidden;
+            border-bottom: 3px solid rgba(230,36,41,0.2); cursor: pointer;
+            flex-shrink: 0;
+        }
+        .slideshow-placeholder .slide-track { display: flex; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94); }
+        .slideshow-placeholder .slide { min-width: 100%; height: 100%; background-size: cover; background-position: center; position: relative; }
+        .slide-1 { background: linear-gradient(135deg, #1a1f33 0%, #2a1f3a 100%); }
+        .slide-2 { background: linear-gradient(135deg, #1a1f33 0%, #1a2a3a 100%); }
+        .slide-3 { background: linear-gradient(135deg, #1a1f33 0%, #3a1a2a 100%); }
+        .slide-4 { background: linear-gradient(135deg, #1a1f33 0%, #1a3a2a 100%); }
+        .slide-5 { background: linear-gradient(135deg, #1a1f33 0%, #2a3a1a 100%); }
+        .slide-6 { background: linear-gradient(135deg, #1a1f33 0%, #3a2a1a 100%); }
+        .slideshow-placeholder .slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .slideshow-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 5; }
+        .slideshow-dots .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.15); border: none; cursor: pointer; transition: 0.3s; padding: 0; }
+        .slideshow-dots .dot.active { background: #e62429; box-shadow: 0 0 20px rgba(230,36,41,0.4); transform: scale(1.3); }
+
+        .slideshow-arrows { position: absolute; top: 50%; left: 0; width: 100%; transform: translateY(-50%); display: flex; justify-content: space-between; padding: 0 6px; pointer-events: none; z-index: 4; }
+        .slideshow-arrows button {
+            pointer-events: auto; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.06); color: #fff; width: 28px; height: 28px;
+            border-radius: 50%; font-size: 1rem; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .slideshow-arrows button:hover { background: rgba(230,36,41,0.3); border-color: #e62429; }
+
+        .project-info {
+            padding: 16px 18px 14px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .project-info h3 { font-family: 'Bangers', cursive; font-size: 1.2rem; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .project-info h3 .highlight { color: #e62429; }
+        .project-tech { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+        .project-tech span {
+            background: rgba(230,36,41,0.12); color: #e62429; padding: 1px 10px; border-radius: 50px;
+            font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px;
+            border: 1px solid rgba(230,36,41,0.08);
+        }
+
+        .project-desc-short {
+            color: #9aa3c0;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            flex: 1;
+        }
+        .project-desc-short .see-more-link {
+            color: #e62429;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-block;
+            margin-left: 4px;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        .project-desc-short .see-more-link:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .project-details-expand {
+            display: none; /* Hidden by default, used only for modal data */
+        }
+
+        .project-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .project-links a {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #b0b8d1;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        .project-links a:hover { color: #e62429; }
+        .project-links a .arrow { transition: 0.3s; }
+        .project-links a:hover .arrow { transform: translateX(6px); }
+        .project-links a.no-demo {
+            opacity: 0.6;
+        }
+        .project-links a.no-demo:hover {
+            color: #ff5257;
+            opacity: 1;
+        }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-container {
+            background: #12162a;
+            border: 1px solid rgba(230,36,41,0.2);
+            border-radius: 24px;
+            max-width: 750px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 40px 45px;
+            position: relative;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.active .modal-container {
+            transform: scale(1);
+        }
+        .modal-container::-webkit-scrollbar { width: 6px; }
+        .modal-container::-webkit-scrollbar-track { background: transparent; }
+        .modal-container::-webkit-scrollbar-thumb { background: #e62429; border-radius: 10px; }
+
+        .modal-close {
+            position: sticky;
+            top: 0;
+            float: right;
+            background: none;
+            border: none;
+            color: #b0b8d1;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: 0.3s;
+            line-height: 1;
+            padding: 0 0 0 15px;
+            z-index: 10;
+        }
+        .modal-close:hover {
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .modal-body h3 {
+            font-family: 'Bangers', cursive;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        .modal-body .project-tech {
+            margin-bottom: 20px;
+        }
+        .modal-body .modal-description p {
+            color: #b0b8d1;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        .modal-body .modal-description p strong {
+            color: #fff;
+            font-weight: 700;
+        }
+        .modal-body .modal-description .detail-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: #9aa3c0;
+            font-size: 0.9rem;
+            padding: 4px 0;
+            line-height: 1.5;
+        }
+        .modal-body .modal-description .detail-feature span {
+            color: #e62429;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        /* ── TOAST NOTIFICATION ── */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(11, 14, 26, 0.95);
+            border: 1px solid #e62429;
+            border-radius: 12px;
+            padding: 16px 28px;
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            backdrop-filter: blur(10px);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 420px;
+        }
+        .toast-notification::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: #e62429;
+            border-radius: 12px 0 0 12px;
+        }
+        .toast-notification .toast-icon {
+            font-size: 1.4rem;
+        }
+
+        /* ── CONTACT ── */
+        #contact { border-top: 1px solid rgba(255,255,255,0.04); }
+        .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .contact-info h2 { font-family: 'Bangers', cursive; font-size: 2.6rem; letter-spacing: 2px; }
+        .contact-info h2 .accent { color: #e62429; }
+        .contact-info p { color: #9aa3c0; font-size: 1.05rem; line-height: 1.7; margin: 16px 0 28px; max-width: 400px; }
+        .contact-socials { display: flex; gap: 20px; flex-wrap: wrap; }
+        .contact-socials a {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); padding: 10px 24px;
+            border-radius: 50px; font-weight: 700; font-size: 0.9rem; color: #b0b8d1; transition: 0.3s;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .contact-socials a:hover { border-color: #e62429; color: #fff; background: rgba(230,36,41,0.06); transform: translateY(-3px); }
+
+        .contact-form { display: flex; flex-direction: column; gap: 16px; }
+        .contact-form input, .contact-form textarea {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;
+            padding: 16px 20px; font-size: 1rem; color: #fff; font-family: 'Roboto', sans-serif; transition: 0.3s; outline: none;
+        }
+        .contact-form input:focus, .contact-form textarea:focus { border-color: #e62429; background: rgba(255,255,255,0.06); box-shadow: 0 0 30px rgba(230,36,41,0.04); }
+        .contact-form input::placeholder, .contact-form textarea::placeholder { color: #4a5270; }
+        .contact-form textarea { resize: vertical; min-height: 130px; }
+        .contact-form .btn-primary { align-self: flex-start; padding: 14px 44px; }
+
+        /* ── FOOTER ── */
+        footer { border-top: 1px solid rgba(255,255,255,0.04); padding: 30px 0; text-align: center; color: #4a5270; font-size: 0.9rem; }
+        footer .foot-mark { font-family: 'Bangers', cursive; color: #e62429; letter-spacing: 2px; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1200px) {
+            .projects-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        @media (max-width: 1024px) {
+            .projects-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero .container { grid-template-columns: 1fr; text-align: center; }
+            .hero-content p.lede { margin-left: auto; margin-right: auto; }
+            .hero-buttons { justify-content: center; }
+            .hero-visual { margin-top: 20px; }
+            .hex-photo-outer { width: 260px; height: 300px; }
+            .ghost-hex { width: 340px; height: 390px; }
+            .about-grid, .contact-wrap { grid-template-columns: 1fr; }
+            .skills-grid { grid-template-columns: 1fr 1fr; }
+            .contact-form .btn-primary { align-self: stretch; }
+            .ojt-showcase {
+                grid-template-columns: 1fr;
+                padding: 30px 24px;
+            }
+            .ojt-showcase-visual .slideshow-placeholder {
+                aspect-ratio: 16/9;
+            }
+            .toast-notification {
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 980px) {
+            nav .nav-links, nav a.cta-nav { display: none; }
+            .nav-toggle { display: flex; }
+            nav.open .nav-links {
+                display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+                position: absolute; top: 100%; left: 0; width: 100%; background: rgba(11,14,26,0.98);
+                padding: 18px 24px 24px; border-bottom: 3px solid rgba(230,36,41,0.3);
+            }
+            nav.open a.cta-nav { display: inline-block; margin-top: 10px; }
+            nav.open .nav-links a.nav-link { padding: 10px 0; width: 100%; }
+        }
+
+        @media (max-width: 640px) {
+            .projects-grid { grid-template-columns: 1fr 1fr; }
+            .hero-content h1 { font-size: 2.8rem; }
+            .section-title { font-size: 2.1rem; }
+            .skills-grid { grid-template-columns: 1fr; }
+            section { padding: 60px 0; }
+            .ojt-showcase { padding: 20px 16px; gap: 30px; }
+            .slideshow-arrows button { width: 24px; height: 24px; font-size: 0.8rem; }
+            .month-flag { font-size: 0.55rem; padding: 3px 10px; top: 8px; left: 8px; }
+            .project-info h3 { font-size: 1rem; }
+            .project-info p { font-size: 0.75rem; }
+            .project-card { min-height: 400px; }
+            .modal-container { padding: 25px 20px; }
+            .modal-body h3 { font-size: 1.6rem; }
+            .toast-notification {
+                font-size: 0.85rem;
+                padding: 14px 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .projects-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ── ANIMATIONS ── */
+        .fade-up { opacity: 0; transform: translateY(40px); animation: fadeUp 0.8s ease forwards; }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+    </style>
+</head>
+
+<body>
+    <div class="web-pattern"></div>
+
+    <!-- ─── HEADER ─── -->
+    <header>
+        <div class="container">
+            <a href="#home" class="logo-mark">
+                <div class="hex-wrap">
+                    <div class="hex-bg"></div>
+                    <div class="hex-inner">HC</div>
+                </div>
+                <div class="logo-word">Hyacinth<small>Web Developer</small></div>
+            </a>
+
+            <nav id="mainNav">
+                <div class="nav-links">
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#skills" class="nav-link">Skills</a>
+                    <a href="#experience" class="nav-link">Experience</a>
+                    <a href="#projects" class="nav-link">Projects</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </div>
+                <a href="#" class="cta-nav">Resume</a>
+            </nav>
+
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ─── HOME / HERO ─── -->
+    <section id="home">
+        <div class="hero">
+            <div class="container">
+                <div class="hero-content fade-up">
+                    <span class="eyebrow eyebrow-red"><span class="dot-live"></span> Open to opportunities</span>
+                    <p class="tagline">Front-end developer &amp; <strong>UI/UX enthusiast</strong></p>
+                    <h1>Hi, I'm<br />Hyacinth</h1>
+                    <p class="lede">
+                        I build clean, reliable web systems — from reservation platforms to
+                        internal portals — with a strong eye for detail and a habit of shipping
+                        things that actually hold up.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#projects" class="btn-primary">View My Work</a>
+                        <a href="#contact" class="btn-secondary">Let's Talk</a>
+                    </div>
+                </div>
+                <div class="hero-visual fade-up delay-2">
+                    <div class="ghost-hex"></div>
+                    <div class="hex-photo-outer">
+                        <div class="hex-photo-inner">
+                            <img src="pic-me.jpg" alt="Hyacinth M. Cañares" />
+                        </div>
+                    </div>
+                    <span class="tag-badge mono">BSIT · Magna Cum Laude</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── ABOUT ─── -->
+    <section id="about">
+        <div class="container">
+            <span class="eyebrow eyebrow-red fade-up">About Me</span>
+            <h2 class="section-title fade-up"><span class="accent-blue">✦</span> About <span class="accent">Me</span></h2>
+            <div class="about-grid">
+                <div class="about-text fade-up delay-1">
+                    <p>
+                        I'm Hyacinth M. Cañares, a detail-oriented fresh graduate with a
+                        Bachelor of Science in Information Technology from Carlos Hilado
+                        Memorial State University, graduating Magna Cum Laude.
+                    </p>
+                    <div class="web-quote">"With great code comes great responsibility."</div>
+                    <p>
+                        I'm eager to apply my technical skills in a professional environment
+                        while continuously learning — adaptable, hardworking, and comfortable
+                        meeting deadlines in independent and team settings alike.
+                    </p>
+                </div>
+                <div class="about-fact-list fade-up delay-2">
+                    <div class="about-fact">
+                        <div class="hex-icon">🎓</div>
+                        <div><h4>BSIT, Magna Cum Laude</h4><p>Carlos Hilado Memorial State University</p></div>
+                    </div>
+                    <div class="about-fact">
+                        <div class="hex-icon">💻</div>
+                        <div><h4>Full-stack fundamentals</h4><p>Comfortable across front end, back end, and databases</p></div>
+                    </div>
+                    <div class="about-fact">
+                        <div class="hex-icon">🤝</div>
+                        <div><h4>Team-oriented</h4><p>Capstone, freelance, and OJT work across different team setups</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── SKILLS ─── -->
+    <section id="skills">
+        <div class="container">
+            <span class="eyebrow eyebrow-blue fade-up">Toolkit</span>
+            <h2 class="section-title fade-up"><span class="accent">✦</span> Skills <span class="accent-blue">&amp; Tools</span></h2>
+            <p class="section-sub fade-up delay-1">What I use to build and ship a project, end to end.</p>
+            <div class="skills-grid">
+                <div class="skill-group fade-up delay-2" data-tilt>
+                    <h4>Languages</h4>
+                    <div class="tags">
+                        <span>HTML</span><span>CSS</span><span>JavaScript</span><span>PHP</span><span>Python</span><span>SQL</span>
+                    </div>
+                </div>
+                <div class="skill-group fade-up delay-3" data-tilt>
+                    <h4>Frameworks &amp; Tools</h4>
+                    <div class="tags">
+                        <span>Laravel</span><span>MySQL</span><span>Git</span><span>Microsoft Office</span>
+                    </div>
+                </div>
+                <div class="skill-group fade-up delay-4" data-tilt>
+                    <h4>Core Strengths</h4>
+                    <div class="tags">
+                        <span>Problem Solving</span><span>Attention to Detail</span><span>Teamwork</span><span>Time Management</span><span>Adaptability</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── EXPERIENCE ─── -->
+    <section id="experience">
+        <div class="container">
+            <span class="eyebrow eyebrow-red fade-up">Track Record</span>
+            <h2 class="section-title fade-up"><span class="accent-blue">✦</span> Experience</h2>
+            <p class="section-sub fade-up delay-1">My On-the-Job Training journey at Inksite Advertising.</p>
+
+            <div class="ojt-showcase fade-up delay-3">
+                <div class="ojt-showcase-text">
+                    <span class="eyebrow eyebrow-red" style="margin-bottom: 12px; display: inline-flex;">🖨️ On-the-Job Training</span>
+                    <h3>Inksite Advertising <span style="color: #5f8bff;">·</span> 2023</h3>
+
+                    <div class="ojt-narrative">
+                        <p>
+                            In 2023, I completed my On-the-Job Training at <strong>Inksite Advertising</strong>,
+                            a full-service printing and advertising company. Over four months, I worked directly
+                            with the company's manager and senior developers, transitioning from classroom
+                            projects to building <strong>9 distinct production-grade tools</strong> that the
+                            business still relies on today.
+                        </p>
+                        <p>
+                            I was fully embedded in their workflow—attending daily stand-ups, gathering
+                            requirements from the operations team, and shipping features on a two-week sprint
+                            cycle. I built <strong>pricing calculators</strong> (tarpaulin, Sintra board, custom
+                            t-shirts), a <strong>Point-of-Sale system</strong>, a <strong>dental clinic
+                            management system</strong>, a <strong>photography booking portal</strong>, an
+                            <strong>inventory module</strong>, a <strong>content creation CMS</strong>, and
+                            several <strong>promotional web games</strong>—each one replacing messy spreadsheets
+                            and whiteboard tracking.
+                        </p>
+                        <p>
+                            By the end of my internship, my supervisor noted my ability to deliver ahead of
+                            schedule, adapt quickly to their existing tech stack, and communicate clearly with
+                            non-technical staff—making me a reliable contributor from day one. Several of these
+                            tools are <strong>still in active use</strong> at the company today.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="ojt-showcase-visual">
+                    <div class="slideshow-placeholder" data-slideshow="ojt-featured">
+                        <div class="slide-track">
+
+                            <div class="slide slide-1">
+                                <img src="project/ojt/team1.jpg" alt="OJT Team" />
+                                <span class="month-flag">🤝 Team</span>
+                            </div>
+                            <div class="slide slide-2">
+                                <img src="project/ojt/team2.jpg" alt="OJT Team with Manager and Supervisor" />
+                                <span class="month-flag">🤝 Manager &amp; Supervisor</span>
+                            </div>
+                            <div class="slide slide-3">
+                                <img src="project/ojt/feb1.jpg" alt="Tarpaulin Calculator" />
+                                <span class="month-flag">📐 Feb 2026 · Tarpaulin Calc</span>
+                            </div>
+                            <div class="slide slide-4">
+                                <img src="project/ojt/feb2.jpg" alt="Sintra Calculator" />
+                                <span class="month-flag">📐 Feb 2026 · Sintra Calc</span>
+                            </div>
+                            <div class="slide slide-1">
+                                <img src="project/ojt/feb3.jpg" alt="T-Shirt Preview Tool" />
+                                <span class="month-flag">👕 Feb 2026 · T-Shirt Preview</span>
+                            </div>
+                            <div class="slide slide-2">
+                                <img src="project/ojt/mar1.jpg" alt="Point-of-Sale System" />
+                                <span class="month-flag">🧾 Mar 2026 · POS System</span>
+                            </div>
+                            <div class="slide slide-3">
+                                <img src="project/ojt/mar2.jpg" alt="Dental Clinic Management System" />
+                                <span class="month-flag">🦷 Mar 2026 · Dental Clinic</span>
+                            </div>
+                            <div class="slide slide-4">
+                                <img src="project/ojt/apr1.jpg" alt="Photography Booking Portal" />
+                                <span class="month-flag">📸 Apr 2026 · Booking Portal</span>
+                            </div>
+                            <div class="slide slide-1">
+                                <img src="project/ojt/apr2.jpg" alt="Inventory Module" />
+                                <span class="month-flag">📦 Apr 2026 · Inventory Module</span>
+                            </div>
+                            <div class="slide slide-2">
+                                <img src="project/ojt/may1.jpg" alt="Content Creation CMS" />
+                                <span class="month-flag">🗂️ May 2026 · Content CMS</span>
+                            </div>
+                            <div class="slide slide-3">
+                                <img src="project/ojt/may2.jpg" alt="Promotional Web Games" />
+                                <span class="month-flag">🎮 May 2026 · Promo Games</span>
+                            </div>
+
+                        </div>
+                        <div class="slideshow-arrows">
+                            <button class="prev">‹</button>
+                            <button class="next">›</button>
+                        </div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="slideshow-label">
+                        ⬅️ 11 slides: 2 team photos + 9 individual projects
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── PROJECTS ─── -->
+    <section id="projects">
+        <div class="container">
+            <span class="eyebrow eyebrow-blue fade-up">Portfolio</span>
+            <h2 class="section-title fade-up"><span class="accent">✦</span> Web <span class="accent-blue">Projects</span></h2>
+            <p class="section-sub fade-up delay-1">Each project features a slideshow — click <strong>SEE MORE</strong> after the description to open a detailed view.</p>
+
+            <div class="projects-grid">
+
+                <!-- PROJECT 1: CHMSU IPMO -->
+                <div class="project-card fade-up delay-2">
+                    <div class="slideshow-placeholder" data-slideshow="0">
+                        <div class="slide-track">
+                            <div class="slide slide-1"><img src="project/caps/c1.jpg" alt="CHMSU IPMO Portal feature 1"/></div>
+                            <div class="slide slide-2"><img src="project/caps/c2.jpg" alt="CHMSU IPMO Portal feature 2"/></div>
+                            <div class="slide slide-3"><img src="project/caps/c3.jpg" alt="CHMSU IPMO Portal feature 3"/></div>
+                            <div class="slide slide-4"><img src="project/caps/c4.jpg" alt="CHMSU IPMO Portal feature 4"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">CHMSU</span> IPMO Portal</h3>
+                        <div class="project-tech"><span>HTML</span><span>CSS</span><span>Javascript</span><span>PHP</span><span>MySQL</span></div>
+                        <p class="project-desc-short">
+                            A web-based online application system for CHMSU-IPMO Services, streamlining IP service requests with real-time monitoring, document repository, and analytics.
+                            <span class="see-more-link" data-project="0">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>📌 Background</strong><br>
+                            The Intellectual Property Management Office (IPMO) of Carlos Hilado Memorial State University (CHMSU) is authorized to protect, manage, and promote intellectual property (IP) assets generated by the institution's stakeholders. These assets include utility models, copyrights, trademarks, and industrial designs that have potential for public benefit. However, the current processes are primarily manual or semi-digital, leading to inefficiencies, delays, miscommunication, and limited access for stakeholders.</p>
+                            <p>The existing system relies heavily on physical document submission, face-to-face inquiries, Google Forms for submission, and Google Drive for data storage. As a result, the office encounters delayed processing, lack of transparency in application status, and limited accessibility for remote stakeholders — hindering service delivery and discouraging innovators from engaging with the office.</p>
+                            <p><strong>🎯 Objectives</strong><br>
+                            The main objective is to design, develop, and evaluate a Web-Based Online Application System for CHMSU-IPMO Services with the following features:</p>
+                            <div class="detail-feature"><span>✓</span> Online Application process for IP Services</div>
+                            <div class="detail-feature"><span>✓</span> Real-time monitoring of application status</div>
+                            <div class="detail-feature"><span>✓</span> Document Repository for secure storage</div>
+                            <div class="detail-feature"><span>✓</span> Data Analytics for informed decision-making</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Full-stack developer — designed the database schema, built the admin panel, and implemented the request lifecycle.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://chmsu-ipmo.42web.io/ipmo/login.php#login" target="_blank">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 2: HGS Beach Resort -->
+                <div class="project-card fade-up delay-3">
+                    <div class="slideshow-placeholder" data-slideshow="1">
+                        <div class="slide-track">
+                            <div class="slide slide-2"><img src="project/mini/s1.png" alt="HGS Beach Resort feature 1"/></div>
+                            <div class="slide slide-3"><img src="project/mini/s2.png" alt="HGS Beach Resort feature 2"/></div>
+                            <div class="slide slide-4"><img src="project/mini/s3.png" alt="HGS Beach Resort feature 3"/></div>
+                            <div class="slide slide-1"><img src="project/mini/s4.png" alt="HGS Beach Resort feature 4"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">HGS</span> Beach Resort</h3>
+                        <div class="project-tech"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>PHP</span><span>MySQL</span></div>
+                        <p class="project-desc-short">
+                            A digitalized reservation management system covering room &amp; service browsing, reservations, payments, guest feedback, and sales reporting.
+                            <span class="see-more-link" data-project="1">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>📌 Background</strong><br>
+                            HGS Beach Resort is one of the newest beachfront locations in Himamaylan City, offering comfortable lodging, beach access, and a range of recreational activities. Currently, the resort uses a manual reservation system to record customer information and manage bookings, with payments through cash and GCash. This process is prone to human error, disorganization, difficulties in data retrieval, and challenges in tracking customer preferences and feedback.</p>
+                            <p>The reliance on physical record paper for bookings increases the risk of mistakes and consumes more time. Recognizing these issues, a faster and more reliable reservation management system is essential to streamline communication, reduce errors, and improve information accessibility. This digitized, expedited, and automated reservation process will enhance the customer experience, leading to happier guests and increased loyalty.</p>
+                            <p><strong>🎯 Objectives</strong><br>
+                            The study aims to design and develop a digitalized efficient reservation management solution for HGS Beach Resort with the following features:</p>
+                            <div class="detail-feature"><span>✓</span> Room and Service browsing</div>
+                            <div class="detail-feature"><span>✓</span> Online Reservation system</div>
+                            <div class="detail-feature"><span>✓</span> Payment Transaction processing</div>
+                            <div class="detail-feature"><span>✓</span> Guest Feedback &amp; Rating</div>
+                            <div class="detail-feature"><span>✓</span> Sales Report generation</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Lead developer — built the reservation engine, integrated payment gateway, and created the admin reporting module.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="no-demo">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 3: Luna Booking System -->
+                <div class="project-card fade-up delay-4">
+                    <div class="slideshow-placeholder" data-slideshow="2">
+                        <div class="slide-track">
+                            <div class="slide slide-2"><img src="project/free/p1-a.jpg" alt="Luna Booking System dashboard"/></div>
+                            <div class="slide slide-4"><img src="project/free/p1-b.jpg" alt="Luna Booking System calendar view"/></div>
+                            <div class="slide slide-3"><img src="project/free/p1-c.jpg" alt="Luna Booking System booking form"/></div>
+                            <div class="slide slide-5"><img src="project/free/p1-d.jpg" alt="Luna Booking System confirmation"/></div>
+                            <div class="slide slide-1"><img src="project/free/p1-e.jpg" alt="Luna Booking System admin panel"/></div>
+                            <div class="slide slide-6"><img src="project/free/p1-f.jpg" alt="Luna Booking System mobile view"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">Luna</span> Booking System</h3>
+                        <div class="project-tech"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>PHP</span><span>MySQL</span></div>
+                        <p class="project-desc-short">
+                            A modern, user-focused booking system designed to make scheduling fast, intuitive, and visually calm.
+                            <span class="see-more-link" data-project="2">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>🔍 Key Features:</strong></p>
+                            <div class="detail-feature"><span>✓</span> Real-time availability &amp; time-slot selection</div>
+                            <div class="detail-feature"><span>✓</span> Automated email confirmations</div>
+                            <div class="detail-feature"><span>✓</span> Admin dashboard for managing reservations</div>
+                            <div class="detail-feature"><span>✓</span> Fully mobile-responsive design</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Full-stack developer — designed the UI/UX, built the booking engine, and implemented the admin panel.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://hyacinthmc-dev.github.io/luna-booking/" target="_blank">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 4: Petri Dish -->
+                <div class="project-card fade-up delay-1">
+                    <div class="slideshow-placeholder" data-slideshow="3">
+                        <div class="slide-track">
+                            <div class="slide slide-1"><img src="project/free/p2-a.jpg" alt="Petri dish 1"/></div>
+                            <div class="slide slide-2"><img src="project/free/p2-b.jpg" alt="Petri dish 2"/></div>
+                            <div class="slide slide-3"><img src="project/free/p2-c.jpg" alt="Petri dish 3"/></div>
+                            <div class="slide slide-4"><img src="project/free/p2-d.jpg" alt="Petri dish 4"/></div>
+                            <div class="slide slide-5"><img src="project/free/p2-e.jpg" alt="Petri dish 5"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">Petri</span> — reaction-diffusion dish</h3>
+                        <div class="project-tech"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Canvas</span></div>
+                        <p class="project-desc-short">
+                            A generative art toy that grows real chemistry instead of pre-baked animation — powered by the Gray-Scott equations.
+                            <span class="see-more-link" data-project="3">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>🔬 Description</strong><br>
+                            Petri is a generative art toy that grows real chemistry instead of pre-baked animation. Under the hood, two virtual compounds diffuse and react across a grid using the Gray-Scott equations — the same math that describes how natural patterns like coral, animal coats, and bacterial colonies self-organize. Click into the dish to seed growth, pick a preset to set the chemical rules, and watch organic patterns emerge, spread, and settle entirely on their own. No two runs ever look quite the same.</p>
+                            <p><strong>✨ Key Features</strong></p>
+                            <div class="detail-feature"><span>✓</span> Real reaction-diffusion simulation — powered by the Gray-Scott model (feed rate + kill rate), not scripted or randomized shapes</div>
+                            <div class="detail-feature"><span>✓</span> Interactive seeding — click or drag anywhere in the dish to introduce new growth exactly where you want it</div>
+                            <div class="detail-feature"><span>✓</span> Live rule-switching presets — Coral, Mitosis, Worms, Mazes, and Bubbles; switching presets doesn't reset the dish, so an existing pattern morphs into the new rule set in real time</div>
+                            <div class="detail-feature"><span>✓</span> Manual chemistry control — fine-tune Feed (f) and Kill (k) rates directly with lab-style mono readouts</div>
+                            <div class="detail-feature"><span>✓</span> 5 color cultures — Bioluminescent, Coral Reef, Mono Ink, Blood Moon, and Arctic, each a distinct gradient mapped to chemical concentration</div>
+                            <div class="detail-feature"><span>✓</span> Dish management — Reseed to add fresh growth points, Clear dish to start over, Save image to export a PNG snapshot</div>
+                            <div class="detail-feature"><span>✓</span> Self-contained — a single HTML file, no external libraries; the simulation, rendering, and UI all run client-side</div>
+                            <div class="detail-feature"><span>✓</span> Responsive — the control panel adapts from a right-side rail on desktop to a bottom bar on mobile</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Creator — designed and implemented the entire simulation, UI, and visual design from scratch.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://hyacinthmc-dev.github.io/petri/" target="_blank">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 5: BrightSmile Dental Clinic -->
+                <div class="project-card fade-up delay-2">
+                    <div class="slideshow-placeholder" data-slideshow="4">
+                        <div class="slide-track">
+                            <div class="slide slide-1"><img src="p3-a.jpg" alt="BrightSmile Dental Clinic feature 1"/></div>
+                            <div class="slide slide-2"><img src="p3-b.jpg" alt="BrightSmile Dental Clinic feature 2"/></div>
+                            <div class="slide slide-3"><img src="p3-c.jpg" alt="BrightSmile Dental Clinic feature 3"/></div>
+                            <div class="slide slide-4"><img src="p3-d.jpg" alt="BrightSmile Dental Clinic feature 4"/></div>
+                            <div class="slide slide-5"><img src="p3-e.jpg" alt="BrightSmile Dental Clinic feature 5"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">BrightSmile</span> Dental Clinic</h3>
+                        <div class="project-tech"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
+                        <p class="project-desc-short">
+                            A fully interactive experience built on top of a clean static landing page — featuring live booking, real-time open/closed status, animated counters, scroll reveals, and more.
+                            <span class="see-more-link" data-project="4">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>📌 Background</strong><br>
+                            BrightSmile Dental Clinic's original website was a clean, static landing page — good-looking, but purely informational. Visitors could read about services and hours, but couldn't book an appointment online, had no way to know if the clinic was currently open, and the page offered no interactive feedback or motion to guide them through the content.</p>
+                            <p><strong>🎯 Objectives</strong><br>
+                            The goal was to transform the static site into a fully interactive experience by adding a custom JavaScript layer on top of the existing design, with the following features:</p>
+                            <div class="detail-feature"><span>✓</span> Built a working appointment booking form with real-time field validation</div>
+                            <div class="detail-feature"><span>✓</span> Added a live "Open Now / Closed" indicator driven by the clinic's actual hours</div>
+                            <div class="detail-feature"><span>✓</span> Implemented animated counters for key stats (years in practice, patient rating, etc.)</div>
+                            <div class="detail-feature"><span>✓</span> Created scroll-triggered reveal animations for page sections</div>
+                            <div class="detail-feature"><span>✓</span> Added active-state navigation that highlights the section currently in view</div>
+                            <div class="detail-feature"><span>✓</span> Built one-tap copy-to-clipboard buttons for contact numbers</div>
+                            <div class="detail-feature"><span>✓</span> Added a smooth-scroll "back to top" button</div>
+                            <div class="detail-feature"><span>✓</span> Implemented a responsive, animated mobile navigation menu</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Front-end developer — built the entire JavaScript interactivity layer, including form validation, live status indicator, animated counters, scroll reveals, navigation highlighting, clipboard copy, back-to-top button, and mobile menu.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://hyacinthmc-dev.github.io/BrightSmile/" target="_blank">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 6: EcoTrack -->
+                <div class="project-card fade-up delay-3">
+                    <div class="slideshow-placeholder" data-slideshow="5">
+                        <div class="slide-track">
+                            <div class="slide slide-1"><img src="https://picsum.photos/seed/ecotrack1/600/400" alt="EcoTrack Dashboard"/></div>
+                            <div class="slide slide-2"><img src="https://picsum.photos/seed/ecotrack2/600/400" alt="EcoTrack Analytics"/></div>
+                            <div class="slide slide-3"><img src="https://picsum.photos/seed/ecotrack3/600/400" alt="EcoTrack Reports"/></div>
+                            <div class="slide slide-4"><img src="https://picsum.photos/seed/ecotrack4/600/400" alt="EcoTrack Community"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">EcoTrack</span> Sustainability</h3>
+                        <div class="project-tech"><span>React</span><span>D3.js</span><span>Node.js</span><span>MongoDB</span></div>
+                        <p class="project-desc-short">
+                            A real-time environmental sustainability dashboard that empowers organizations to monitor, analyze, and reduce their carbon footprint.
+                            <span class="see-more-link" data-project="5">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>🔍 Key Features:</strong></p>
+                            <div class="detail-feature"><span>✓</span> Real-time carbon footprint tracking</div>
+                            <div class="detail-feature"><span>✓</span> Interactive D3.js visualizations</div>
+                            <div class="detail-feature"><span>✓</span> Goal setting &amp; progress monitoring</div>
+                            <div class="detail-feature"><span>✓</span> Community benchmarking &amp; best practices</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Full-stack developer — built the React front-end, D3 charts, and Node.js API with MongoDB.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="no-demo">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 7: FitForge -->
+                <div class="project-card fade-up delay-4">
+                    <div class="slideshow-placeholder" data-slideshow="6">
+                        <div class="slide-track">
+                            <div class="slide slide-2"><img src="https://picsum.photos/seed/fitforge1/600/400" alt="FitForge Dashboard"/></div>
+                            <div class="slide slide-3"><img src="https://picsum.photos/seed/fitforge2/600/400" alt="FitForge Workout"/></div>
+                            <div class="slide slide-4"><img src="https://picsum.photos/seed/fitforge3/600/400" alt="FitForge Nutrition"/></div>
+                            <div class="slide slide-1"><img src="https://picsum.photos/seed/fitforge4/600/400" alt="FitForge Community"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">FitForge</span> Fitness Platform</h3>
+                        <div class="project-tech"><span>React Native</span><span>Firebase</span><span>Express.js</span></div>
+                        <p class="project-desc-short">
+                            A comprehensive fitness and wellness platform designed to help users achieve their health goals through personalized plans and community engagement.
+                            <span class="see-more-link" data-project="6">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>🔍 Key Features:</strong></p>
+                            <div class="detail-feature"><span>✓</span> AI-powered workout recommendations</div>
+                            <div class="detail-feature"><span>✓</span> Barcode scanner for food logging</div>
+                            <div class="detail-feature"><span>✓</span> Wearable device integration</div>
+                            <div class="detail-feature"><span>✓</span> Social challenges &amp; achievement sharing</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Mobile developer — built the React Native app with Firebase backend and Express API.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="no-demo">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROJECT 8: EduBridge -->
+                <div class="project-card fade-up delay-1">
+                    <div class="slideshow-placeholder" data-slideshow="7">
+                        <div class="slide-track">
+                            <div class="slide slide-3"><img src="https://picsum.photos/seed/edubridge1/600/400" alt="EduBridge Course Management"/></div>
+                            <div class="slide slide-4"><img src="https://picsum.photos/seed/edubridge2/600/400" alt="EduBridge Student View"/></div>
+                            <div class="slide slide-1"><img src="https://picsum.photos/seed/edubridge3/600/400" alt="EduBridge Analytics"/></div>
+                            <div class="slide slide-2"><img src="https://picsum.photos/seed/edubridge4/600/400" alt="EduBridge Interactive Module"/></div>
+                        </div>
+                        <div class="slideshow-arrows"><button class="prev">‹</button><button class="next">›</button></div>
+                        <div class="slideshow-dots"></div>
+                    </div>
+                    <div class="project-info">
+                        <h3><span class="highlight">EduBridge</span> Learning System</h3>
+                        <div class="project-tech"><span>Angular</span><span>TypeScript</span><span>Spring Boot</span><span>PostgreSQL</span></div>
+                        <p class="project-desc-short">
+                            A modern, feature-rich Learning Management System (LMS) built to transform the educational experience for both instructors and students.
+                            <span class="see-more-link" data-project="7">SEE MORE</span>
+                        </p>
+                        <div class="project-details-expand">
+                            <p><strong>🔍 Key Features:</strong></p>
+                            <div class="detail-feature"><span>✓</span> Interactive course builder with multimedia</div>
+                            <div class="detail-feature"><span>✓</span> Personalized student dashboards</div>
+                            <div class="detail-feature"><span>✓</span> Automated grading &amp; feedback engine</div>
+                            <div class="detail-feature"><span>✓</span> Comprehensive reporting &amp; analytics</div>
+                            <p style="margin-top:12px;"><strong>Role:</strong> Full-stack developer — built the Angular front-end, Spring Boot REST API, and PostgreSQL database.</p>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="no-demo">Live Demo <span class="arrow">→</span></a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── MODAL ─── -->
+    <div class="modal-overlay" id="projectModal">
+        <div class="modal-container">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-body" id="modalBody">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── CONTACT ─── -->
+    <section id="contact">
+        <div class="container">
+            <span class="eyebrow eyebrow-blue fade-up">Contact</span>
+            <h2 class="section-title fade-up"><span class="accent">✦</span> Get In <span class="accent-blue">Touch</span></h2>
+            <div class="contact-wrap">
+                <div class="contact-info fade-up delay-1">
+                    <h2>Let's build<br />something <span class="accent">amazing</span>.</h2>
+                    <p>Whether you need a new website, a web app, or just want to chat about ideas — I'm always open to new opportunities.</p>
+                    <div class="contact-socials">
+                        <a href="https://github.com/HyacinthMC-dev" target="_blank">🐙 GitHub</a>
+                        <a href="https://www.linkedin.com/in/hyacinth-cañares-a54a36417" target="_blank">💼 LinkedIn</a>
+                        <a href="https://www.facebook.com/htnicayh.malundocanares" target="_blank">🐦 Facebook</a>
+                        <a href="mailto:hyacanares543@gmail.com" target="_blank">📧 Email</a>
+                    </div>
+                </div>
+                <form class="contact-form fade-up delay-2">
+                    <input type="text" placeholder="Your Name" />
+                    <input type="email" placeholder="Your Email" />
+                    <textarea placeholder="Tell me about your project…"></textarea>
+                    <button type="submit" class="btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── FOOTER ─── -->
+    <footer>
+        <div class="container">
+            <p><span class="foot-mark">Hyacinth</span> &mdash; 2026 &bull; Built with <span style="color:#e62429;">❤</span> &amp; code</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ── Mobile Nav Toggle ──
+            const nav = document.getElementById('mainNav');
+            const toggle = document.getElementById('navToggle');
+            toggle.addEventListener('click', () => {
+                nav.classList.toggle('open');
+                toggle.classList.toggle('open');
+            });
+            nav.querySelectorAll('.nav-link, .cta-nav').forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('open');
+                    toggle.classList.remove('open');
+                });
+            });
+
+            // ── Slideshows ──
+            const placeholders = document.querySelectorAll('.slideshow-placeholder');
+            placeholders.forEach((container) => {
+                const track = container.querySelector('.slide-track');
+                const slides = track.querySelectorAll('.slide');
+                const dotsContainer = container.querySelector('.slideshow-dots');
+                const prevBtn = container.querySelector('.prev');
+                const nextBtn = container.querySelector('.next');
+                let current = 0;
+                const total = slides.length;
+                if (total === 0) return;
+
+                for (let i = 0; i < total; i++) {
+                    const dot = document.createElement('button');
+                    dot.className = 'dot' + (i === 0 ? ' active' : '');
+                    dot.addEventListener('click', () => goTo(i));
+                    dotsContainer.appendChild(dot);
+                }
+                const dots = dotsContainer.querySelectorAll('.dot');
+
+                function goTo(index) {
+                    current = (index + total) % total;
+                    track.style.transform = `translateX(-${current * 100}%)`;
+                    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+                }
+                function next() { goTo(current + 1); }
+                function prev() { goTo(current - 1); }
+
+                if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
+                if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); next(); });
+
+                let interval = setInterval(next, 4800);
+                container.addEventListener('mouseenter', () => clearInterval(interval));
+                container.addEventListener('mouseleave', () => {
+                    clearInterval(interval);
+                    interval = setInterval(next, 4800);
+                });
+                container.addEventListener('click', (e) => {
+                    if (e.target.closest('.slideshow-arrows') || e.target.closest('.slideshow-dots')) return;
+                    next();
+                });
+                container.setAttribute('tabindex', '0');
+                container.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight') next();
+                    if (e.key === 'ArrowLeft') prev();
+                });
+            });
+
+            // ── SKILLS: 3D TILT EFFECT ──
+            const skillCards = document.querySelectorAll('.skill-group[data-tilt]');
+            skillCards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -8;
+                    const rotateY = ((x - centerX) / centerX) * 8;
+                    card.style.transform =
+                        `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                    const heading = card.querySelector('h4');
+                    if (heading) {
+                        const glow = Math.abs(rotateX) + Math.abs(rotateY);
+                        heading.style.textShadow = `0 0 ${glow * 2}px rgba(230,36,41,0.2)`;
+                    }
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform =
+                    'perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                    const heading = card.querySelector('h4');
+                    if (heading) {
+                        heading.style.textShadow = 'none';
+                    }
+                });
+            });
+
+            // ── MODAL LOGIC ──
+            const modal = document.getElementById('projectModal');
+            const modalBody = document.getElementById('modalBody');
+            const modalClose = document.getElementById('modalClose');
+            const seeMoreLinks = document.querySelectorAll('.see-more-link');
+
+            function openModal(projectIndex) {
+                const card = document.querySelector(`.see-more-link[data-project="${projectIndex}"]`).closest('.project-card');
+                if (!card) return;
+
+                const title = card.querySelector('h3')?.innerHTML || 'Project Details';
+                const tech = card.querySelector('.project-tech')?.innerHTML || '';
+                const details = card.querySelector('.project-details-expand')?.innerHTML || '<p>No additional details available.</p>';
+
+                modalBody.innerHTML = `
+                    <h3>${title}</h3>
+                    <div class="project-tech">${tech}</div>
+                    <div class="modal-description">${details}</div>
+                `;
+
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            seeMoreLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const projectIndex = link.getAttribute('data-project');
+                    if (projectIndex !== null) {
+                        openModal(projectIndex);
+                    }
+                });
+            });
+
+            modalClose.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+
+            // ── TOAST NOTIFICATION FOR NO DEMO ──
+            function showToast(message) {
+                // Remove existing toast if any
+                const existingToast = document.querySelector('.toast-notification');
+                if (existingToast) {
+                    existingToast.remove();
+                }
+
+                const toast = document.createElement('div');
+                toast.className = 'toast-notification';
+                toast.innerHTML = `
+                    <span class="toast-icon">⛔</span>
+                    <span>${message}</span>
+                `;
+                document.body.appendChild(toast);
+
+                // Trigger reflow to enable animation
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    toast.style.opacity = '1';
+                    toast.style.transform = 'translateY(0)';
+                }, 10);
+
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                }, 2800);
+            }
+
+            // Intercept Live Demo clicks
+            document.querySelectorAll('.project-links a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    // If the link has the 'no-demo' class or href is just '#'
+                    if (link.classList.contains('no-demo') || link.getAttribute('href') === '#') {
+                        e.preventDefault();
+                        showToast('No live demo available for this project.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
